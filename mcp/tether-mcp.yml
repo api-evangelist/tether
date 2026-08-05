@@ -1,0 +1,177 @@
+generated: '2026-08-05'
+method: searched
+status: published
+source: https://docs.wdk.tether.io/ai/mcp-toolkit
+server:
+  name: wdk
+  product: WDK MCP Toolkit
+  package: '@tetherto/wdk-mcp-toolkit'
+  repository: https://github.com/tetherto/wdk-mcp-toolkit
+  transport: stdio
+  hosted: false
+  url: null
+  x-note: >-
+    There is NO remote/hosted MCP endpoint. The WDK MCP Toolkit is a library that
+    extends the official @modelcontextprotocol/sdk McpServer; developers run it
+    locally over stdio with their own BIP-39 seed. A second, ready-made stdio server
+    ships as the `wdk-mcp` binary inside @tetherto/wdk-cli. Because keys stay on the
+    operator's machine by design, a hosted tools/list endpoint does not exist and
+    was not probed for.
+  status_note: 'Beta — docs record v1.0.0-beta.1; APIs may change between releases.'
+alternate_servers:
+- name: wdk-mcp
+  package: '@tetherto/wdk-cli'
+  transport: stdio
+  description: Bundled MCP server exposing the WDK CLI's local wallet daemon to
+    MCP clients. Automated setup supported for Claude Desktop, Claude Code and
+    OpenClaw via `wdk mcp`.
+  docs: https://docs.wdk.tether.io/cli/guides/use-mcp-server
+capabilities:
+  chains:
+  - ethereum
+  - polygon
+  - arbitrum
+  - optimism
+  - base
+  - avalanche
+  - bnb
+  - plasma
+  - bitcoin
+  - solana
+  - spark
+  - ton
+  - tron
+  human_confirmation: >-
+    All write operations use MCP elicitations to require explicit user approval
+    before broadcasting a transaction.
+  annotations_published:
+  - readOnlyHint
+  - destructiveHint
+  - idempotentHint
+  - openWorldHint
+  extensible: Custom tools can be registered alongside built-ins using standard MCP
+    SDK patterns.
+  key_handling: Seed phrases stay local; `close()` wipes keys from memory; read and
+    write tool sets are separable.
+tools:
+- name: getAddress
+  category: wallet
+  description: Get the wallet address for a chain.
+- name: getBalance
+  category: wallet
+  description: Get the native balance for a chain, in base units.
+- name: getTokenBalance
+  category: wallet
+  description: Get a human-readable token balance by symbol.
+- name: getFeeRates
+  category: wallet
+  description: Get normal and fast fee rates for a chain.
+- name: getMaxSpendableBtc
+  category: wallet
+  description: Compute the maximum spendable Bitcoin amount, fee and change.
+- name: quoteSendTransaction
+  category: wallet
+  description: Estimate the fee for a native transfer.
+- name: quoteTransfer
+  category: wallet
+  description: Estimate the fee for a token transfer.
+- name: sendTransaction
+  category: wallet
+  description: Broadcast a native transfer. Write operation.
+- name: transfer
+  category: wallet
+  description: Broadcast a token transfer. Write operation.
+- name: sign
+  category: wallet
+  description: Sign a message with the chain key.
+- name: verify
+  category: wallet
+  description: Verify a message signature.
+- name: getCurrentPrice
+  category: pricing
+  description: Current spot price for a base/quote pair (Bitfinex-backed).
+- name: getHistoricalPrice
+  category: pricing
+  description: Historical OHLCV points for a pair over a time window.
+- name: getIndexerTokenBalance
+  category: indexer
+  description: Token balance for an address, via the WDK Indexer API.
+- name: getTokenTransfers
+  category: indexer
+  description: Token transfer history for an address, via the WDK Indexer API.
+- name: quoteSwap
+  category: swap
+  description: Quote a DEX swap.
+- name: swap
+  category: swap
+  description: Execute a DEX swap. Write operation.
+- name: quoteBridge
+  category: bridge
+  description: Quote a cross-chain bridge route.
+- name: bridge
+  category: bridge
+  description: Execute a cross-chain bridge. Write operation.
+- name: quoteSupply
+  category: lending
+  description: Quote supplying collateral to a lending protocol.
+- name: supply
+  category: lending
+  description: Supply collateral. Write operation.
+- name: quoteWithdraw
+  category: lending
+  description: Quote a lending withdrawal.
+- name: withdraw
+  category: lending
+  description: Withdraw supplied assets. Write operation.
+- name: quoteBorrow
+  category: lending
+  description: Quote a borrow.
+- name: borrow
+  category: lending
+  description: Borrow against collateral. Write operation.
+- name: quoteRepay
+  category: lending
+  description: Quote a repayment.
+- name: repay
+  category: lending
+  description: Repay a borrow. Write operation.
+- name: quoteBuy
+  category: fiat
+  description: Quote a fiat on-ramp purchase.
+- name: buy
+  category: fiat
+  description: Create a fiat on-ramp purchase.
+- name: quoteSell
+  category: fiat
+  description: Quote a fiat off-ramp sale.
+- name: sell
+  category: fiat
+  description: Create a fiat off-ramp sale.
+- name: getTransactionDetail
+  category: fiat
+  description: Get details of a fiat ramp transaction.
+- name: getSupportedCryptoAssets
+  category: fiat
+  description: List crypto assets supported by the fiat provider.
+- name: getSupportedFiatCurrencies
+  category: fiat
+  description: List fiat currencies supported by the provider.
+- name: getSupportedCountries
+  category: fiat
+  description: List countries supported by the fiat provider.
+coverage:
+  tools_documented: 34
+  tools_claimed_by_docs: 35
+  x-note: >-
+    The overview page states "35 built-in tools"; the API Reference page enumerates
+    34 named tool headings. Recorded as observed rather than padded to match the
+    marketing count.
+x-evidence:
+  fetched: '2026-08-05'
+  urls:
+  - url: https://docs.wdk.tether.io/ai/mcp-toolkit
+    http_status: 200
+  - url: https://docs.wdk.tether.io/ai/mcp-toolkit/api-reference
+    http_status: 200
+  - url: https://docs.wdk.tether.io/cli/guides/use-mcp-server
+    http_status: 200

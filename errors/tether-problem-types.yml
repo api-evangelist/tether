@@ -1,0 +1,124 @@
+generated: '2026-08-05'
+method: derived
+source: openapi/tether-wdk-indexer-openapi-original.yml
+docs: https://docs.wdk.tether.io/tools/indexer-api/api-reference
+format: custom-json
+x-note: >-
+  NOT RFC 9457. The WDK Indexer API returns a plain application/json envelope, not
+  application/problem+json, and publishes no problem `type` URIs. The envelope is
+  consistent across every 4xx/5xx in the spec — {error, message, status} — which is
+  more than most, but a machine consumer cannot dereference an error type or branch
+  on a stable machine-readable code beyond the HTTP status itself.
+envelope:
+  media_type: application/json
+  fields:
+  - name: error
+    type: string
+    description: Short error type token.
+  - name: message
+    type: string
+    description: Human-readable detail.
+  - name: status
+    type: integer
+    description: Repeats the HTTP status code.
+  example_from_docs: '{"error": "error_type", "message": "Detailed error message"}'
+problems:
+- status: 400
+  title: Bad Request
+  detail: Invalid parameters, address format, blockchain, or token.
+  operations:
+  - getTokenTransfers
+  - getTokenBalances
+  - batchTokenTransfers
+  - batchTokenBalances
+  - createApiKey
+  remediation: >-
+    Validate the address format for the target chain (0x… for EVM, bc1… for Bitcoin,
+    T… for Tron) and confirm the blockchain/token pair against GET /api/v1/chains —
+    each token is only valid on a subset of chains.
+- status: 401
+  title: Unauthorized
+  detail: Expired API key.
+  operations:
+  - getTokenTransfers
+  - getTokenBalances
+  - batchTokenTransfers
+  - batchTokenBalances
+  - listApiKeys
+  - createApiKey
+  - deleteApiKey
+  remediation: Request or rotate a key via POST /api/v1/keys, or re-register at
+    https://wdk-api.tether.io/register.
+- status: 403
+  title: Forbidden
+  detail: Missing or invalid API key.
+  operations:
+  - getTokenTransfers
+  - getTokenBalances
+  - batchTokenTransfers
+  - batchTokenBalances
+  - listApiKeys
+  - createApiKey
+  - deleteApiKey
+  remediation: Send the key in the X-API-KEY request header.
+  x-note: >-
+    The spec splits 401 (expired) from 403 (missing/invalid) — the inverse of the
+    more common convention, where a missing credential is 401. Worth knowing before
+    writing retry logic.
+- status: 404
+  title: Not Found
+  detail: API key not found or access denied.
+  operations:
+  - deleteApiKey
+  remediation: Confirm the hashedKey path parameter against GET /api/v1/keys.
+- status: 429
+  title: Too Many Requests
+  detail: Rate limit exceeded.
+  operations:
+  - getTokenTransfers
+  - getTokenBalances
+  - batchTokenTransfers
+  - batchTokenBalances
+  - listApiKeys
+  - createApiKey
+  - deleteApiKey
+  remediation: >-
+    Back off against the published per-endpoint budgets in
+    rate-limits/tether-rate-limits.yml. No Retry-After or RateLimit-* header is
+    documented, so the client must implement its own backoff.
+- status: 500
+  title: Internal Server Error
+  detail: Indexer service unavailable or unexpected failure.
+  operations:
+  - listChains
+  - getTokenTransfers
+  - getTokenBalances
+  - batchTokenTransfers
+  - batchTokenBalances
+  - listApiKeys
+  - createApiKey
+  - deleteApiKey
+  remediation: Retry with backoff; check GET /api/v1/health for per-chain indexer
+    status.
+- status: 503
+  title: Service Degraded
+  detail: >-
+    Returned by GET /api/v1/health when one or more per-chain indexer checks are
+    unhealthy. Uses a DIFFERENT body from the standard error envelope —
+    {status, timestamp, summary{healthy,unhealthy,total}, checks{…}} — so health
+    responses must be parsed separately from errors.
+  operations:
+  - getHealth
+  remediation: >-
+    Inspect `checks` to find which chain indexers are degraded before assuming an
+    application fault. Observed live on 2026-08-05 returning
+    summary {healthy: 14, unhealthy: 2, total: 16}.
+x-evidence:
+  fetched: '2026-08-05'
+  urls:
+  - url: https://wdk-api.tether.io/docs/json
+    http_status: 200
+  - url: https://wdk-api.tether.io/api/v1/health
+    http_status: 503
+  - url: https://docs.wdk.tether.io/tools/indexer-api/api-reference
+    http_status: 200

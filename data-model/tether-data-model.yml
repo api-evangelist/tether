@@ -1,0 +1,195 @@
+generated: '2026-08-05'
+method: derived
+source: openapi/tether-wdk-indexer-openapi-original.yml
+api: WDK Indexer API
+x-note: >-
+  The spec declares components.schemas as an EMPTY object — every schema is inlined
+  at the response/requestBody level, so there is no $ref graph to walk. The entities
+  below were derived by reading those inline object schemas and the path parameters
+  that address them. Zero schema reuse is the single biggest structural weakness of
+  an otherwise well-described spec: the balance object, the transfer object and the
+  error envelope are each redefined in full at every operation that returns them.
+entities:
+- name: Chain
+  addressed_by: path parameter {blockchain}
+  identifier: name
+  source_operations:
+  - listChains
+  fields:
+  - name: name
+    type: string
+    description: Blockchain identifier used as the {blockchain} path parameter everywhere
+      else.
+  - name: tokens
+    type: array<string>
+    description: Token identifiers valid on this chain.
+  - name: caseSensitive
+    type: object
+    description: >-
+      Per-chain case handling for address, tx and block identifiers. If the object is
+      PRESENT, addresses are preserved as-is; if ABSENT, addresses are automatically
+      lowercased. A subtle correctness trap for clients caching addresses across chains.
+  known_values:
+  - ethereum
+  - arbitrum
+  - avalanche
+  - polygon
+  - sepolia
+  - tron
+  - ton
+  - bitcoin
+  - spark
+- name: Token
+  addressed_by: path parameter {token}
+  identifier: symbol slug
+  source_operations:
+  - listChains
+  known_values:
+  - usdt
+  - xaut
+  - usat
+  - btc
+  x-note: Scoped by chain — a token identifier is only valid on the chains listed for
+    it by listChains.
+- name: Address
+  addressed_by: path parameter {address}
+  identifier: chain-native address string
+  x-note: >-
+    Format varies by chain (0x… EVM, bc1… Bitcoin, T… Tron). Not an entity the API
+    owns — it is the join key between Chain, Token, TokenBalance and TokenTransfer.
+- name: TokenBalance
+  source_operations:
+  - getTokenBalances
+  - batchTokenBalances
+  envelope_field: tokenBalance
+  fields:
+  - name: blockchain
+    type: string
+  - name: token
+    type: string
+  - name: amount
+    type: string
+    description: Current balance as a decimal string (string, not number — do not parse
+      as float).
+- name: TokenTransfer
+  source_operations:
+  - getTokenTransfers
+  - batchTokenTransfers
+  envelope_field: transfers
+  collection: true
+  ordering: sorted by block number
+  fields:
+  - name: blockchain
+    type: string
+  - name: blockNumber
+    type: integer
+  - name: transactionHash
+    type: string
+  - name: transferIndex
+    type: integer
+- name: ApiKey
+  source_operations:
+  - listApiKeys
+  - createApiKey
+  - deleteApiKey
+  identifier: hashedKey
+  fields:
+  - name: hashedKey
+    type: string
+    description: Hash of the key — the addressable identifier used in the DELETE path.
+  - name: key
+    type: string
+    description: Plaintext key. Returned by createApiKey ONLY, shown once.
+  - name: owner
+    type: string
+  - name: label
+    type: string
+  - name: ttl
+    type: number
+    description: Time-to-live in milliseconds; 0 means no expiry.
+  - name: createdAt
+    type: number
+  - name: lastActive
+    type: number
+  - name: max
+    type: number
+    description: Rate-limit budget attached to the key.
+  - name: timeWindow
+    type: number
+    description: Rate-limit window attached to the key.
+  x-note: >-
+    `max` and `timeWindow` are returned per key, which means the published per-endpoint
+    limits in rate-limits/tether-rate-limits.yml are key-scoped and readable at runtime
+    — a client can discover its own budget from listApiKeys even though no response
+    header carries it.
+- name: HealthReport
+  source_operations:
+  - getHealth
+  fields:
+  - name: status
+    type: string
+  - name: timestamp
+    type: string
+  - name: summary
+    type: object
+    description: '{healthy, unhealthy, total} counts across per-chain indexer checks.'
+  - name: checks
+    type: object
+    description: Per-check health detail.
+- name: ErrorEnvelope
+  source_operations: all
+  fields:
+  - name: error
+    type: string
+  - name: message
+    type: string
+  - name: status
+    type: number
+  see: errors/tether-problem-types.yml
+relationships:
+- from: Chain
+  to: Token
+  kind: has_many
+  via: tokens
+  description: Each chain enumerates the token identifiers valid on it.
+- from: TokenBalance
+  to: Chain
+  kind: belongs_to
+  via: blockchain
+- from: TokenBalance
+  to: Token
+  kind: belongs_to
+  via: token
+- from: TokenTransfer
+  to: Chain
+  kind: belongs_to
+  via: blockchain
+- from: Address
+  to: TokenBalance
+  kind: has_one
+  via: address path parameter, scoped by (blockchain, token)
+- from: Address
+  to: TokenTransfer
+  kind: has_many
+  via: address path parameter, scoped by (blockchain, token)
+- from: ApiKey
+  to: ApiKey
+  kind: self
+  via: hashedKey
+  description: Keys are self-managed; a key authenticates the operations that list,
+    create and delete keys for its owner.
+batch_semantics:
+  operations:
+  - batchTokenBalances
+  - batchTokenTransfers
+  max_items: 10
+  x-note: >-
+    The batch response is an array positionally aligned with the request, where each
+    element is a oneOf of a success object OR an error envelope. Partial failure is
+    the normal case and the HTTP status stays 200 — a client that only checks the
+    status code will silently treat per-item errors as results. This is the most
+    important consumption rule in the whole API.
+x-evidence:
+  fetched: '2026-08-05'
+  url: https://wdk-api.tether.io/docs/json
+  http_status: 200

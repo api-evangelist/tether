@@ -1,0 +1,154 @@
+generated: '2026-08-05'
+method: searched
+source: https://www.npmjs.com/org/tetherto
+notes: >-
+  All first-party WDK client libraries are published to npm under the @tetherto
+  scope and mirrored as repositories in the github.com/tetherto organization. Every
+  package listed here was resolved against the npm registry on the generated date;
+  the version recorded is the registry `dist-tags.latest`. WDK is in public beta —
+  most packages carry 1.0.0-beta.* versions. No first-party PyPI, Maven Central,
+  NuGet, RubyGems, Packagist, crates.io or pkg.go.dev distributions were found;
+  native mobile cores are distributed as source (wdk-core-kotlin, wdk-core-swift).
+packages:
+- language: javascript
+  registry: npm
+  name: '@tetherto/wdk'
+  version: 1.0.0-beta.15
+  url: https://www.npmjs.com/package/@tetherto/wdk
+  repository: https://github.com/tetherto/wdk
+  install: npm install @tetherto/wdk
+  official: true
+  role: core
+  description: WDK orchestrator — registers and manages multiple wallet and protocol
+    modules behind one interface.
+- language: javascript
+  registry: npm
+  name: '@tetherto/wdk-cli'
+  version: 1.0.0-beta.1
+  url: https://www.npmjs.com/package/@tetherto/wdk-cli
+  repository: https://github.com/tetherto/wdk-cli
+  install: npm install -g --allow-scripts=@tetherto/wdk-cli @tetherto/wdk-cli
+  official: true
+  role: cli
+  description: Local command-line wallet, daemon, and bundled MCP server.
+- language: javascript
+  registry: npm
+  name: '@tetherto/wdk-mcp-toolkit'
+  url: https://www.npmjs.com/package/@tetherto/wdk-mcp-toolkit
+  repository: https://github.com/tetherto/wdk-mcp-toolkit
+  install: npm install @tetherto/wdk-mcp-toolkit @modelcontextprotocol/sdk
+  official: true
+  role: mcp
+  description: Extends the official @modelcontextprotocol/sdk McpServer with 35 WDK
+    wallet, pricing, indexer, swap, bridge, lending and fiat tools.
+  x-note: >-
+    npm dist-tags.latest resolved to 0.0.0 at probe time; the docs describe the
+    package as v1.0.0-beta.1. Recorded as published-but-version-ambiguous rather
+    than asserting a version the registry did not return.
+- language: javascript
+  registry: npm
+  name: '@tetherto/wdk-wallet-evm'
+  version: 1.0.0-beta.16
+  url: https://www.npmjs.com/package/@tetherto/wdk-wallet-evm
+  repository: https://github.com/tetherto/wdk-wallet-evm
+  install: npm install @tetherto/wdk-wallet-evm
+  official: true
+  role: wallet-module
+  description: BIP-44 wallets for EVM blockchains.
+- language: javascript
+  registry: npm
+  name: '@tetherto/wdk-wallet-btc'
+  version: 1.0.0-beta.12
+  url: https://www.npmjs.com/package/@tetherto/wdk-wallet-btc
+  repository: https://github.com/tetherto/wdk-wallet-btc
+  install: npm install @tetherto/wdk-wallet-btc
+  official: true
+  role: wallet-module
+  description: BIP-84 (SegWit) wallets for Bitcoin.
+- language: javascript
+  registry: npm
+  name: '@tetherto/wdk-wallet-solana'
+  version: 1.0.0-beta.12
+  url: https://www.npmjs.com/package/@tetherto/wdk-wallet-solana
+  repository: https://github.com/tetherto/wdk-wallet-solana
+  install: npm install @tetherto/wdk-wallet-solana
+  official: true
+  role: wallet-module
+  description: BIP-44 wallets for Solana.
+- language: javascript
+  registry: npm
+  name: '@tetherto/wdk-wallet-ton'
+  version: 1.0.0-beta.12
+  url: https://www.npmjs.com/package/@tetherto/wdk-wallet-ton
+  repository: https://github.com/tetherto/wdk-wallet-ton
+  install: npm install @tetherto/wdk-wallet-ton
+  official: true
+  role: wallet-module
+  description: BIP-44 wallets for TON.
+- language: javascript
+  registry: npm
+  name: '@tetherto/wdk-wallet-tron'
+  version: 1.0.0-beta.9
+  url: https://www.npmjs.com/package/@tetherto/wdk-wallet-tron
+  repository: https://github.com/tetherto/wdk-wallet-tron
+  install: npm install @tetherto/wdk-wallet-tron
+  official: true
+  role: wallet-module
+  description: BIP-44 wallets for Tron.
+- language: javascript
+  registry: npm
+  name: '@tetherto/wdk-wallet-spark'
+  version: 1.0.0-beta.22
+  url: https://www.npmjs.com/package/@tetherto/wdk-wallet-spark
+  repository: https://github.com/tetherto/wdk-wallet-spark
+  install: npm install @tetherto/wdk-wallet-spark
+  official: true
+  role: wallet-module
+  description: BIP-44 wallets for Spark with Lightning Network support.
+module_families:
+  wallet:
+  - wdk-wallet-aptos
+  - wdk-wallet-btc
+  - wdk-wallet-evm
+  - wdk-wallet-evm-erc-4337
+  - wdk-wallet-evm-7702-gasless
+  - wdk-wallet-solana
+  - wdk-wallet-solana-gasless
+  - wdk-wallet-spark
+  - wdk-wallet-ton
+  - wdk-wallet-ton-gasless
+  - wdk-wallet-tron
+  - wdk-wallet-tron-gasfree
+  protocol:
+  - wdk-protocol-swap-velora-evm
+  - wdk-protocol-bridge-usdt0-evm
+  - wdk-protocol-lending-aave-evm
+  - wdk-protocol-fiat-moonpay
+  - wdk-protocol-multisig-safe
+  pricing:
+  - wdk-pricing-bitfinex-http
+  - wdk-pricing-coingecko-http
+  - wdk-pricing-provider
+  tooling:
+  - wdk-cli
+  - wdk-mcp-toolkit
+  - wdk-utils
+  - wdk-secret-manager
+  - wdk-asset-registry
+  - wdk-failover-provider
+  - wdk-worklet-bundler
+  - create-wdk-module
+  - wdk-p2p-address-book
+  react_native:
+  - wdk-react-native-core
+  - wdk-react-native-secure-storage
+  - wdk-uikit-react-native
+  - pear-wrk-wdk
+  native_cores:
+  - wdk-core-kotlin
+  - wdk-core-swift
+x-evidence:
+  fetched: '2026-08-05'
+  registry: https://registry.npmjs.org/
+  github_org: https://github.com/tetherto
+  scope_manifest: https://github.com/tetherto/tether-io-bug-bounty-scope

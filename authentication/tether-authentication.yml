@@ -1,0 +1,81 @@
+generated: '2026-08-05'
+method: searched
+source: openapi/tether-wdk-indexer-openapi-original.yml
+docs: https://docs.wdk.tether.io/tools/indexer-api/api-reference
+summary:
+  types:
+  - apiKey
+  api_key_in:
+  - header
+  oauth2_flows: []
+  x-note: >-
+    Single-scheme provider. No OAuth 2.0, no OpenID Connect, no mutual TLS, no HTTP
+    basic or bearer anywhere in Tether's public API surface — which is why no
+    scopes/ artifact is emitted (there is no scope surface to describe).
+schemes:
+- name: ApiKeyAuth
+  type: apiKey
+  in: header
+  parameter: X-API-KEY
+  description: API key obtained via the registration form. Include in the X-API-KEY
+    header for all authenticated requests.
+  sources:
+  - openapi/tether-wdk-indexer-openapi-original.yml
+issuance:
+  self_service: true
+  registration_url: https://wdk-api.tether.io/register
+  cost: free
+  api_managed: true
+  operations:
+  - operationId: createApiKey
+    method: POST
+    path: /api/v1/keys
+    note: Returns the plaintext key ONCE, plus its hashedKey, owner, ttl, label,
+      createdAt and lastActive.
+  - operationId: listApiKeys
+    method: GET
+    path: /api/v1/keys
+    note: >-
+      Also returns the key's own rate-limit budget as `max` and `timeWindow` — the
+      only runtime path to that figure, since no RateLimit-* headers are sent.
+  - operationId: deleteApiKey
+    method: DELETE
+    path: /api/v1/keys/{hashedKey}
+    note: Keys are revoked by HASH, so a revocation script never handles plaintext.
+  expiry:
+    field: ttl
+    unit: milliseconds
+    no_expiry_value: 0
+unauthenticated_operations:
+- operationId: getHealth
+  path: GET /api/v1/health
+- operationId: listChains
+  path: GET /api/v1/chains
+failure_semantics:
+  '401': Unauthorized — API key EXPIRED.
+  '403': Forbidden — API key MISSING or INVALID.
+  x-note: >-
+    Inverted relative to the common convention, where a missing credential is 401.
+    Rotation logic must trigger on 401, not 403.
+sdk_and_agent_auth:
+  x-note: >-
+    The WDK SDK, CLI and MCP Toolkit do not authenticate to Tether at all — they are
+    self-custodial and authenticate to CHAINS with a locally held BIP-39 seed. The
+    only Tether credential in that stack is the optional Indexer API key passed to
+    `useIndexer({ apiKey })`, plus an optional MoonPay key for the fiat modules.
+  secret_handling_published:
+  - Seed phrases stay local; `close()` wipes keys from memory.
+  - Read and write tool sets are separable so an operator can grant read-only access.
+  - Docs mandate a dedicated development wallet with limited funds.
+  - '@tetherto/wdk-secret-manager generates, encrypts and manages seeds.'
+  - '@tetherto/wdk-react-native-secure-storage backs mobile secret storage.'
+  security_model_doc: https://docs.wdk.tether.io/cli/reference/security-model
+x-evidence:
+  fetched: '2026-08-05'
+  urls:
+  - url: https://wdk-api.tether.io/docs/json
+    http_status: 200
+  - url: https://docs.wdk.tether.io/tools/indexer-api/api-reference
+    http_status: 200
+  - url: https://docs.wdk.tether.io/tools/indexer-api/get-started
+    http_status: 200

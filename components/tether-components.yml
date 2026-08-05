@@ -1,0 +1,63 @@
+generated: '2026-08-05'
+method: searched
+source: https://docs.wdk.tether.io/ui-kits/react-native-ui-kit
+x-note: >-
+  Tether ships client-side UI components as a NATIVE MOBILE component library, not
+  as web components or hosted/embedded iframes. There is no JS element library, no
+  hosted checkout surface and no embedded dashboard — the whole point of WDK is that
+  nothing is hosted. Recorded as the shape it actually has.
+families:
+- family: React Native UI Kit
+  package: '@tetherto/wdk-uikit-react-native'
+  repository: https://github.com/tetherto/wdk-uikit-react-native
+  platform: react-native
+  kind: native-component-library
+  docs: https://docs.wdk.tether.io/ui-kits/react-native-ui-kit
+  get_started: https://docs.wdk.tether.io/ui-kits/react-native-ui-kit/get-started
+  api_reference: https://docs.wdk.tether.io/ui-kits/react-native-ui-kit/api-reference
+  theming: https://docs.wdk.tether.io/ui-kits/react-native-ui-kit/theming
+  description: Ready-made, themeable components for building wallet applications.
+  components:
+  - name: AmountInput
+    description: Numeric input with token/fiat toggle, balance helper and Max action.
+  - name: AssetSelector
+    description: Token search and pick list with recent items and empty states.
+  - name: NetworkSelector
+    description: Network picker with gas level indicators and colors.
+  - name: Balance
+    description: Displays a balance value with optional masking and custom loader.
+  - name: CryptoAddressInput
+    description: Address input with QR scan and paste helpers, plus validation state.
+  - name: QRCode
+    description: QR renderer for addresses and payment requests with labeling and
+      styling.
+  - name: TransactionItem
+    description: Single transaction row (sent/received) with token, amounts and network.
+  - name: TransactionList
+    description: Virtualized list of transactions built on TransactionItem.
+  - name: SeedPhrase
+    description: Grid of seed words with optional editing and loading states.
+supporting_libraries:
+- package: '@tetherto/wdk-react-native-core'
+  repository: https://github.com/tetherto/wdk-react-native-core
+  role: Utilities and hooks for wiring WDK into React Native apps.
+  docs: https://docs.wdk.tether.io/tools/react-native-core
+- package: '@tetherto/wdk-react-native-secure-storage'
+  repository: https://github.com/tetherto/wdk-react-native-secure-storage
+  role: Secure key/secret storage for React Native.
+  docs: https://docs.wdk.tether.io/tools/react-native-secure-storage
+- package: '@tetherto/pear-wrk-wdk'
+  repository: https://github.com/tetherto/pear-wrk-wdk
+  role: WDK worklet bundle for the React Native Bare Kit runtime.
+  docs: https://docs.wdk.tether.io/tools/pear-wrk-wdk
+starters:
+- name: React Native Starter (Alpha)
+  repository: https://github.com/tetherto/wdk-starter-react-native
+  docs: https://docs.wdk.tether.io/examples-and-starters/react-native-starter
+x-evidence:
+  fetched: '2026-08-05'
+  urls:
+  - url: https://docs.wdk.tether.io/ui-kits/react-native-ui-kit
+    http_status: 200
+  - url: https://docs.wdk.tether.io/ui-kits/react-native-ui-kit/api-reference
+    http_status: 200

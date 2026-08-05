@@ -1,0 +1,77 @@
+generated: '2026-08-05'
+method: searched
+source: https://docs.wdk.tether.io/cli
+name: WDK CLI
+package: '@tetherto/wdk-cli'
+version: 1.0.0-beta.1
+repository: https://github.com/tetherto/wdk-cli
+status: beta
+description: >-
+  A local command-line, self-custodial wallet built with WDK. Manages named wallets,
+  derives addresses, reads balances and history, sends registered assets, and exposes
+  the same local wallet daemon to MCP-compatible AI clients.
+requirements:
+  node: '>=22.18.0'
+install:
+- method: npm-global
+  command: npm install -g --allow-scripts=@tetherto/wdk-cli @tetherto/wdk-cli@1.0.0-beta.1
+  note: >-
+    The --allow-scripts allowlist permits the CLI's postinstall script, which
+    installs version-pinned wallet modules from its bundled network configuration.
+    Install the SCOPED @tetherto/wdk-cli — the unscoped `wdk-cli` on npm is a
+    different package.
+verify: wdk --version
+binaries:
+- name: wdk
+  purpose: Wallet, read, send, configuration, network, token, fiat-ramp and MCP setup
+    commands.
+- name: wdk-daemon
+  purpose: Holds unlocked wallet instances and serves local wallet requests; started
+    by `wdk` on demand.
+- name: wdk-mcp
+  purpose: Exposes WDK CLI wallet operations to MCP-compatible clients.
+commands:
+- command: wdk wallet
+  description: Create, import, export, list, rename, delete, unlock, lock and select
+    wallets.
+- command: wdk get
+  description: Derive addresses and read balances or transfer history.
+- command: wdk send
+  description: Preview or broadcast native and registered-token transfers.
+- command: wdk buy
+  description: Create a MoonPay on-ramp URL.
+- command: wdk sell
+  description: Create a MoonPay off-ramp URL.
+- command: wdk config
+  description: Read, update, reset or locate local configuration.
+- command: wdk network
+  description: Inspect built-in networks and manage custom networks.
+- command: wdk token
+  description: Inspect built-in tokens and manage custom token entries.
+- command: wdk mcp
+  description: Configure the bundled MCP server for Claude Desktop, Claude Code or
+    OpenClaw.
+help:
+  root: wdk --help
+  per_command: append --help to any command, e.g. `wdk wallet create --help`
+guides:
+  get_started: https://docs.wdk.tether.io/cli/guides/get-started
+  manage_wallets: https://docs.wdk.tether.io/cli/guides/manage-wallets
+  manage_tokens: https://docs.wdk.tether.io/cli/guides/manage-tokens
+  custom_networks: https://docs.wdk.tether.io/cli/guides/custom-networks
+  handle_errors: https://docs.wdk.tether.io/cli/guides/handle-errors
+  use_mcp_server: https://docs.wdk.tether.io/cli/guides/use-mcp-server
+reference:
+  api_reference: https://docs.wdk.tether.io/cli/api-reference
+  configuration: https://docs.wdk.tether.io/cli/configuration
+  architecture: https://docs.wdk.tether.io/cli/reference/architecture
+  security_model: https://docs.wdk.tether.io/cli/reference/security-model
+  storage_format: https://docs.wdk.tether.io/cli/reference/storage-format
+x-note: >-
+  The CLI and its bundled MCP server share one local wallet store and daemon. The
+  docs explicitly direct readers to the security model page before unlocking a
+  funded wallet or granting an agent access.
+x-evidence:
+  fetched: '2026-08-05'
+  url: https://docs.wdk.tether.io/cli
+  http_status: 200

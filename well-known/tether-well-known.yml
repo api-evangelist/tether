@@ -1,0 +1,129 @@
+generated: '2026-08-05'
+method: probed
+source: live GET probes of every host in apis.yml plus the API host root
+result: none
+summary: >-
+  Tether publishes NO /.well-known/ discovery surface on any host. No security.txt,
+  no OIDC or OAuth metadata, no api-catalog, no ai-plugin.json, no A2A agent card.
+soft_404_warning: >-
+  IMPORTANT for any re-run: tether.to and wallet.tether.io answer HTTP 200 with an
+  SPA/Gatsby HTML shell for EVERY path, including all ten /.well-known/* paths, and
+  including a deliberately invented control path. Those 200s are NOT evidence of a
+  document. Each candidate below was diffed against a control path on the same host
+  and rejected when the bodies matched. tether.io and wdk-api.tether.io return real
+  404s (wdk-api returns a proper JSON 404 envelope), so their results are trustworthy
+  at face value.
+hosts:
+- host: https://wdk-api.tether.io
+  trustworthy_404: true
+  control_probe:
+    path: /zzz-control-9f3a
+    status: 404
+    body: '{"message":"Route GET:/zzz-control-9f3a not found","error":"Not Found","statusCode":404}'
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+- host: https://tether.io
+  trustworthy_404: true
+  control_probe:
+    path: /zzz-ctl-9f3a
+    status: 404
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /security.txt
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+  - path: /llms.txt
+    status: 404
+- host: https://tether.to
+  trustworthy_404: false
+  control_probe:
+    path: /definitely-not-real-9f3a
+    status: 200
+    content_type: text/html
+    note: Gatsby SPA catch-all — identical body to every probed path.
+  documents:
+  - path: /.well-known/security.txt
+    status: 200
+    verdict: rejected-soft-404
+  - path: /.well-known/openid-configuration
+    status: 200
+    verdict: rejected-soft-404
+  - path: /.well-known/oauth-authorization-server
+    status: 200
+    verdict: rejected-soft-404
+  - path: /.well-known/api-catalog
+    status: 200
+    verdict: rejected-soft-404
+  - path: /.well-known/ai-plugin.json
+    status: 200
+    verdict: rejected-soft-404
+  - path: /.well-known/agent-card.json
+    status: 200
+    verdict: rejected-soft-404
+  - path: /.well-known/agent.json
+    status: 200
+    verdict: rejected-soft-404
+- host: https://wallet.tether.io
+  trustworthy_404: false
+  control_probe:
+    path: /.well-known/definitely-not-a-real-path-9f3a
+    status: 200
+    content_type: text/html
+    note: Next.js SPA catch-all — identical body to every probed path.
+  documents:
+  - path: /.well-known/security.txt
+    status: 200
+    verdict: rejected-soft-404
+  - path: /.well-known/openid-configuration
+    status: 200
+    verdict: rejected-soft-404
+  - path: /.well-known/oauth-authorization-server
+    status: 200
+    verdict: rejected-soft-404
+  - path: /.well-known/api-catalog
+    status: 200
+    verdict: rejected-soft-404
+  - path: /.well-known/ai-plugin.json
+    status: 200
+    verdict: rejected-soft-404
+  - path: /.well-known/agent-card.json
+    status: 200
+    verdict: rejected-soft-404
+  - path: /.well-known/agent.json
+    status: 200
+    verdict: rejected-soft-404
+- host: https://docs.wdk.tether.io
+  documents:
+  - path: /llms.txt
+    status: 200
+    file: ../llms/tether-llms.txt
+    note: >-
+      The one real machine-readable discovery document Tether publishes, though it
+      sits at the docs root rather than under /.well-known/.
+gaps_the_provider_could_close:
+- A /.well-known/security.txt (RFC 9116) pointing at https://tether.io/bug-bounty/ —
+  the program already exists, it is just not discoverable by a machine.
+- A /.well-known/api-catalog (RFC 9727) listing the WDK Indexer API's apis.json.
+- Returning real 404s from tether.to and wallet.tether.io instead of an SPA catch-all,
+  so automated discovery can tell absence from presence.
+x-evidence:
+  fetched: '2026-08-05'
+  method: curl GET, following redirects, each candidate diffed against a same-host
+    control path

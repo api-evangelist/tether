@@ -1,18 +1,66 @@
 aid: tether
 name: Tether
-description: 'Tether is a company surfaced via the API Evangelist harvest backlog (source: secondary-market)
-  and added to the network as a stub for full-pipeline profiling.'
+description: 'Tether Operations Limited is the issuer of USD₮ (USDT), the largest
+  stablecoin by circulating supply, along with XAU₮ (gold-backed), USA₮ and EUR₮ tokens
+  issued across Ethereum, Tron, TON, Solana, Bitcoin/Liquid, Avalanche, Polygon, Arbitrum,
+  Plasma and other chains. Beyond token issuance, Tether ships a developer surface
+  centred on the open-source Wallet Development Kit (WDK) — a modular, self-custodial
+  multi-chain wallet framework distributed as @tetherto/* npm packages, a WDK CLI,
+  a React Native UI kit, an MCP Toolkit that exposes 35 wallet, pricing, indexer, swap,
+  bridge, lending and fiat tools to AI agents, a published Agent Skill, and the hosted
+  WDK Indexer REST API (wdk-api.tether.io) for token balances and transfer history.
+  Tether also operates the QVAC local-AI SDK, the Tether Wallet app, and a public bug-bounty
+  program.'
 url: https://raw.githubusercontent.com/api-evangelist/tether/refs/heads/main/apis.yml
+image: https://tether.io/wp-content/themes/tether-io-theme/assets/images/logo.svg
 x-type: company
 x-source: harvest:secondary-market
-x-tier: stub
-x-tier-reason: harvest
 specificationVersion: '0.20'
 created: '2026-08-05'
 modified: '2026-08-05'
 tags:
 - Company
-apis: []
+- Stablecoins
+- Cryptocurrency
+- Blockchain
+- Wallets
+- Digital Assets
+- Payments
+- Self-Custody
+- Multi-Chain
+- Agents
+- MCP
+- Open Source
+apis:
+- aid: tether:wdk-indexer
+  name: WDK Indexer API
+  description: 'The WDK Indexer REST API provides read access to token balances and
+    token-transfer history across Ethereum, Arbitrum, Avalanche, Polygon, Sepolia,
+    Tron, TON, Bitcoin, Spark and Plasma for USD₮, XAU₮, USA₮ and BTC. Nine operations
+    cover health, chain/token discovery, API-key self-service, single-address balances
+    and transfers, and batch balance/transfer lookups. Authentication is an X-API-KEY
+    header issued through a free registration form; per-endpoint rate limits are published.'
+  humanURL: https://docs.wdk.tether.io/tools/indexer-api
+  baseURL: https://wdk-api.tether.io
+  tags:
+  - Blockchain
+  - Indexer
+  - Balances
+  - Transfers
+  - Stablecoins
+  properties:
+  - type: OpenAPI
+    url: openapi/tether-wdk-indexer-openapi-original.yml
+  - type: Overlay
+    url: overlays/tether-wdk-indexer-overlay.yaml
+  - type: Documentation
+    url: https://docs.wdk.tether.io/tools/indexer-api
+  - type: APIReference
+    url: https://docs.wdk.tether.io/tools/indexer-api/api-reference
+  - type: GettingStarted
+    url: https://docs.wdk.tether.io/tools/indexer-api/get-started
+  - type: SignUp
+    url: https://wdk-api.tether.io/register
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
@@ -20,4 +68,75 @@ maintainers:
   email: info@apis.io
 common:
 - type: Website
-  url: https://forgeglobal.com/tether_stock/
+  url: https://tether.io/
+- type: DeveloperPortal
+  url: https://docs.wdk.tether.io/
+- type: Documentation
+  url: https://docs.wdk.tether.io/
+- type: APIReference
+  url: https://docs.wdk.tether.io/sdk/all-modules
+- type: GettingStarted
+  url: https://docs.wdk.tether.io/sdk/get-started
+- type: Support
+  url: https://docs.wdk.tether.io/overview/support
+- type: Blog
+  url: https://tether.io/news/
+- type: GitHubOrganization
+  url: https://github.com/tetherto
+- type: SignUp
+  url: https://wdk-api.tether.io/register
+- type: TermsOfService
+  url: https://tether.io/terms/
+- type: PrivacyPolicy
+  url: https://tether.io/privacy/
+- type: Security
+  url: https://tether.io/bug-bounty/
+- type: OpenAPI
+  url: openapi/tether-wdk-indexer-openapi-original.yml
+- type: Overlay
+  url: overlays/tether-wdk-indexer-overlay.yaml
+- type: LLMsTxt
+  url: llms/tether-llms.txt
+- type: Packages
+  url: packages/tether-packages.yml
+- type: SDKs
+  url: packages/tether-packages.yml
+- type: CLI
+  url: cli/tether-cli.yml
+- type: Components
+  url: components/tether-components.yml
+- type: MCPServer
+  url: mcp/tether-mcp.yml
+- type: ToolCrosswalk
+  url: mcp/tether-tool-crosswalk.yml
+- type: AgentSkill
+  url: skills/_index.yml
+- type: Authentication
+  url: authentication/tether-authentication.yml
+- type: Conventions
+  url: conventions/tether-conventions.yml
+- type: RateLimits
+  url: rate-limits/tether-rate-limits.yml
+- type: ErrorCatalog
+  url: errors/tether-problem-types.yml
+- type: DataModel
+  url: data-model/tether-data-model.yml
+- type: Lifecycle
+  url: lifecycle/tether-lifecycle.yml
+- type: ChangeLog
+  url: changelog/tether-changelog.yml
+- type: Conformance
+  url: conformance/tether-conformance.yml
+- type: Sandbox
+  url: sandbox/tether-sandbox.yml
+- type: WellKnown
+  url: well-known/tether-well-known.yml
+- type: DomainSecurity
+  url: security/tether-domain-security.yml
+- type: VulnerabilityDisclosure
+  url: security/tether-vulnerability-disclosure.yml
+x-enrichment:
+  date: '2026-08-05'
+  status: enriched
+  artifacts_added: 24
+  pass: local-v1

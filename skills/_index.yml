@@ -1,0 +1,90 @@
+generated: '2026-08-05'
+method: searched
+x-note: >-
+  Tether is one of the few providers in the catalog that PUBLISHES its own Agent
+  Skill. The provider-authored skill below is saved verbatim (frontmatter intact,
+  plus all 14 reference files) and is the primary artifact; the two generated skills
+  cover the hosted WDK Indexer REST API, which the provider's skill does not address.
+skills:
+- file: tether-wdk-SKILL.md
+  name: wdk
+  title: Tether Wallet Development Kit
+  method: searched
+  spec: AgentSkills (https://agentskills.io/specification)
+  source: https://github.com/tetherto/wdk-docs/blob/main/skills/wdk/SKILL.md
+  docs: https://docs.wdk.tether.io/ai/agent-skills
+  also_published_at: https://github.com/tetherto/wdk-agent-skills
+  distribution: ClawHub — https://clawhub.ai/HumanRupert/tether-wallet-development-kit
+  api: SDK (no OpenAPI — @tetherto/wdk module surface)
+  covers:
+  - Wallet creation and recovery across EVM, Bitcoin, Solana, Spark, TON, Tron, Aptos
+  - Native and token transfers (ERC-20, SPL, Jetton, TRC-20)
+  - DEX swaps (Velora) and swidge routes (Orchestra, LI.FI, Rhino.fi, Symbiosis)
+  - Cross-chain bridging with USDT0 via LayerZero
+  - Aave V3 lending — supply, borrow, repay, withdraw
+  - MoonPay fiat on/off-ramps
+  - Gasless flows — TON paymaster, Tron gas-free, ERC-4337, EIP-7702
+  safety_rules_published_by_provider:
+  - All write operations require explicit human confirmation.
+  - Agents must estimate fees before sending.
+  - Includes prompt-injection detection rules.
+  - Includes mandatory key-cleanup patterns and pre-transaction validation checklists.
+  references_dir: references/
+  reference_files:
+  - chains.md
+  - deployments.md
+  - protocol-bridge.md
+  - protocol-fiat.md
+  - protocol-lending.md
+  - protocol-swap.md
+  - protocol-swidge.md
+  - wallet-aptos.md
+  - wallet-btc.md
+  - wallet-evm.md
+  - wallet-solana.md
+  - wallet-spark.md
+  - wallet-ton.md
+  - wallet-tron.md
+- file: tether-indexer-balances-and-history.md
+  name: tether-indexer-balances-and-history
+  title: Read balances and transfer history from the Tether WDK Indexer
+  method: generated
+  api: openapi/tether-wdk-indexer-openapi-original.yml
+  operations:
+  - listChains
+  - getTokenBalances
+  - getTokenTransfers
+  - batchTokenBalances
+  - batchTokenTransfers
+  - getHealth
+  x-note: >-
+    Covers the surface the provider's own skill does not: the hosted REST API. Carries
+    the three consumption rules that are easy to get wrong — positional batch responses
+    that return 200 on partial failure, time-window paging with no cursor, and the
+    inverted 401/403 split.
+- file: tether-indexer-api-keys.md
+  name: tether-indexer-api-keys
+  title: Manage WDK Indexer API keys
+  method: generated
+  api: openapi/tether-wdk-indexer-openapi-original.yml
+  operations:
+  - createApiKey
+  - listApiKeys
+  - deleteApiKey
+  x-note: >-
+    Credential lifecycle is deliberately absent from Tether's MCP tool surface, so an
+    agent operator needs it written down. Also documents the only runtime path to a
+    key's own rate-limit budget (max / timeWindow from listApiKeys).
+operationid_note: >-
+  The harvested OpenAPI declares no operationIds. Every operationId referenced by these
+  skills is assigned in overlays/tether-wdk-indexer-overlay.yaml and is paired with its
+  method + path in the skill body, so each step stays verifiable against the raw spec.
+x-evidence:
+  fetched: '2026-08-05'
+  urls:
+  - url: https://docs.wdk.tether.io/ai/agent-skills
+    http_status: 200
+  - url: https://raw.githubusercontent.com/tetherto/wdk-docs/main/skills/wdk/SKILL.md
+    http_status: 200
+  - url: https://github.com/tetherto/wdk-agent-skills
+    http_status: 200

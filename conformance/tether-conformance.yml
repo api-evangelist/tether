@@ -1,0 +1,146 @@
+generated: '2026-08-05'
+method: derived
+source: openapi/tether-wdk-indexer-openapi-original.yml + https://docs.wdk.tether.io/
+scope: >-
+  Cross-cutting and industry standards asserted for Tether's PUBLIC developer
+  surface (the WDK Indexer REST API, the WDK SDK/CLI, and the MCP Toolkit). This is
+  a technical-standards assertion, not a compliance-program claim — see the
+  compliance_program block at the bottom.
+standards:
+- id: openapi-3.0
+  conforms: true
+  evidence: >-
+    openapi/tether-wdk-indexer-openapi-original.yml declares openapi 3.0.0 with 9
+    operations, served live and unauthenticated at https://wdk-api.tether.io/docs/json
+    and /docs/yaml, rendered through Swagger UI at /docs.
+- id: api-key-auth
+  conforms: true
+  evidence: components.securitySchemes.ApiKeyAuth — type apiKey, in header, name X-API-KEY.
+- id: oauth2
+  conforms: false
+  evidence: No oauth2 security scheme in the spec and no OAuth documented anywhere in
+    the WDK docs.
+- id: oidc
+  conforms: false
+  evidence: No /.well-known/openid-configuration on any host (soft-404s on tether.to
+    and wallet.tether.io were diffed against a control path and rejected).
+- id: rfc9457-problem-details
+  conforms: false
+  evidence: >-
+    Errors are application/json with a {error, message, status} envelope, not
+    application/problem+json, and no problem type URIs are published. The envelope is
+    consistent across every documented 4xx/5xx, which is the useful half of the
+    standard without the dereferenceable half.
+- id: rfc9116-security-txt
+  conforms: false
+  evidence: No /.well-known/security.txt on tether.io, tether.to or wdk-api.tether.io,
+    despite a live bug-bounty program at https://tether.io/bug-bounty/.
+- id: rfc9727-api-catalog
+  conforms: false
+  evidence: No /.well-known/api-catalog on any probed host.
+- id: rfc8594-sunset-header
+  conforms: false
+  evidence: No deprecation or sunset policy published; no Sunset/Deprecation header
+    documented.
+- id: rfc9331-ratelimit-headers
+  conforms: false
+  evidence: >-
+    Per-endpoint budgets are published in prose and a 429 is returned, but no
+    RateLimit-* or X-RateLimit-* response headers and no Retry-After are documented.
+- id: idempotency-key
+  conforms: false
+  evidence: No Idempotency-Key header or parameter in the spec or docs.
+- id: mcp
+  conforms: true
+  evidence: >-
+    @tetherto/wdk-mcp-toolkit extends the official @modelcontextprotocol/sdk McpServer
+    and publishes 34 documented tools with standard MCP annotations (readOnlyHint,
+    destructiveHint, idempotentHint, openWorldHint) and uses MCP elicitations for
+    human confirmation on writes. A second stdio server (wdk-mcp) ships in the CLI.
+- id: agentskills
+  conforms: true
+  evidence: >-
+    Tether publishes a SKILL.md following the AgentSkills specification
+    (https://agentskills.io/specification) at
+    https://github.com/tetherto/wdk-docs/blob/main/skills/wdk/SKILL.md, plus a
+    dedicated github.com/tetherto/wdk-agent-skills repository.
+- id: llms-txt
+  conforms: true
+  evidence: https://docs.wdk.tether.io/llms.txt returns 200 with a full page index;
+    every docs page is available as raw markdown by appending .md.
+- id: a2a-agent-card
+  conforms: false
+  evidence: >-
+    No /.well-known/agent-card.json or /.well-known/agent.json on any host. The 200s
+    returned by tether.to and wallet.tether.io are SPA catch-alls serving identical
+    HTML for a control path and were rejected.
+- id: asyncapi
+  conforms: false
+  evidence: >-
+    No event, streaming or webhook surface published for the WDK Indexer API — the
+    API is strictly request/response. Not a penalty; there is nothing to describe.
+- id: x402
+  conforms: true
+  evidence: >-
+    Tether documents x402 (HTTP 402 agent payments, EIP-3009 transferWithAuthorization,
+    X-PAYMENT / X-PAYMENT-RESPONSE headers) at https://docs.wdk.tether.io/ai/x402 and
+    positions WDK wallets as x402 clients. Tether is a consumer/enabler of the
+    protocol, not its author.
+- id: eip-3009
+  conforms: true
+  evidence: Gasless transfer support documented per chain in the published skill
+    reference (skills/references/chains.md).
+- id: erc-4337
+  conforms: true
+  evidence: '@tetherto/wdk-wallet-evm-erc-4337 — smart accounts with account
+    abstraction, paymaster and batch transactions.'
+- id: eip-7702
+  conforms: true
+  evidence: '@tetherto/wdk-wallet-evm-7702-gasless — EIP-7702 account support.'
+- id: caip-2
+  conforms: true
+  evidence: wdk-utils 1.0.0-beta.11 introduced CAIP-2-aware validateAddress() dispatch
+    across Bitcoin, EVM, Solana, Spark and Tron.
+- id: bip-32
+  conforms: true
+  evidence: All wallet modules derive hierarchical deterministic wallets from a BIP-39
+    seed.
+- id: bip-39
+  conforms: true
+  evidence: WdkMcpServer.useWdk({ seed }) takes a BIP-39 mnemonic; wdk-secret-manager
+    generates and encrypts seed phrases.
+- id: bip-44
+  conforms: true
+  evidence: EVM, Solana, TON, Tron and Spark wallet modules are documented as BIP-44.
+- id: bip-84
+  conforms: true
+  evidence: wdk-wallet-btc is documented as BIP-84 (native SegWit).
+- id: slip-0010
+  conforms: true
+  evidence: wdk-wallet-aptos is documented as SLIP-0010 Ed25519.
+compliance_program:
+  published: false
+  certifications: []
+  trust_center: null
+  x-note: >-
+    NO Compliance pointer is emitted for this provider. Tether publishes a
+    TRANSPARENCY surface (tokens in circulation, current balances, reports and
+    reserves at https://tether.to/en/transparency/) which is financial-reserve
+    disclosure, not an information-security compliance program. No SOC 2, ISO 27001,
+    PCI DSS, HIPAA, FedRAMP or CSA STAR certification is published, and no trust
+    center exists (trust.tether.io does not resolve). Emitting Compliance from
+    reserve attestations would credit a security posture that has not been claimed.
+  transparency_surface: https://tether.to/en/transparency/
+x-evidence:
+  fetched: '2026-08-05'
+  urls:
+  - url: https://wdk-api.tether.io/docs/json
+    http_status: 200
+  - url: https://docs.wdk.tether.io/llms.txt
+    http_status: 200
+  - url: https://docs.wdk.tether.io/ai/x402
+    http_status: 200
+  - url: https://tether.to/en/transparency/
+    http_status: 200
+  - url: https://tether.io/compliance
+    http_status: 404

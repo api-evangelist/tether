@@ -1,0 +1,62 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for the Tether WDK Indexer API
+  version: 1.0.0
+extends: openapi/tether-wdk-indexer-openapi-original.yml
+x-apievangelist:
+  generated: '2026-08-05'
+  method: generated
+  source: openapi/tether-wdk-indexer-openapi-original.yml
+  rationale: >-
+    The harvested spec is real and well-described at the operation level (every
+    operation has a summary, a description, tags and typed 2xx/4xx responses) but it
+    omits two things a machine consumer needs: a `servers[]` block (the base URL is
+    only stated in prose on the docs site) and `operationId` on all nine operations.
+    This overlay records the API Evangelist additions without mutating the harvested
+    original. The operationIds below are OUR assignment, not the provider's — they
+    are used by mcp/tether-tool-crosswalk.yml, errors/, data-model/ and skills/ so
+    those artifacts can reference operations by a stable name.
+actions:
+- target: $
+  update:
+    servers:
+    - url: https://wdk-api.tether.io
+      description: Production (documented at https://docs.wdk.tether.io/tools/indexer-api/api-reference)
+- target: $.info
+  update:
+    x-apievangelist-source: https://wdk-api.tether.io/docs/json
+    x-apievangelist-docs: https://docs.wdk.tether.io/tools/indexer-api
+    x-apievangelist-auth: X-API-KEY header, free key via https://wdk-api.tether.io/register
+- target: $.paths['/api/v1/health'].get
+  update:
+    operationId: getHealth
+    x-apievangelist-rate-limit: 10 requests / 1 hour
+- target: $.paths['/api/v1/chains'].get
+  update:
+    operationId: listChains
+    x-apievangelist-rate-limit: 60 requests / 1 minute
+- target: $.paths['/api/v1/keys'].get
+  update:
+    operationId: listApiKeys
+- target: $.paths['/api/v1/keys'].post
+  update:
+    operationId: createApiKey
+- target: $.paths['/api/v1/keys/{hashedKey}'].delete
+  update:
+    operationId: deleteApiKey
+- target: $.paths['/api/v1/{blockchain}/{token}/{address}/token-transfers'].get
+  update:
+    operationId: getTokenTransfers
+    x-apievangelist-rate-limit: 8 requests / 10 seconds
+- target: $.paths['/api/v1/{blockchain}/{token}/{address}/token-balances'].get
+  update:
+    operationId: getTokenBalances
+    x-apievangelist-rate-limit: 4 requests / 10 seconds
+- target: $.paths['/api/v1/batch/token-transfers'].post
+  update:
+    operationId: batchTokenTransfers
+    x-apievangelist-rate-limit: 8 requests / 10 seconds
+- target: $.paths['/api/v1/batch/token-balances'].post
+  update:
+    operationId: batchTokenBalances
+    x-apievangelist-rate-limit: 4 requests / 10 seconds

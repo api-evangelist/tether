@@ -1,0 +1,107 @@
+generated: '2026-08-05'
+method: searched
+source: https://docs.wdk.tether.io/tools/indexer-api/api-reference
+derived_from: openapi/tether-wdk-indexer-openapi-original.yml
+api: WDK Indexer API
+base_url: https://wdk-api.tether.io
+authentication:
+  style: api-key
+  header: X-API-KEY
+  issuance: Free, self-service registration at https://wdk-api.tether.io/register
+  self_service: >-
+    The API also exposes key lifecycle over the API itself — GET /api/v1/keys,
+    POST /api/v1/keys, DELETE /api/v1/keys/{hashedKey} — with keys addressed by
+    their hash rather than their value.
+  unauthenticated_operations:
+  - getHealth
+  - listChains
+  see: authentication/tether-authentication.yml
+idempotency:
+  supported: false
+  x-note: >-
+    No idempotency contract. There is no Idempotency-Key header or parameter in the
+    spec or the docs, and no `idempoten*` token appears anywhere in the OpenAPI
+    document. The API is read-dominant (6 of 9 operations are safe GETs), and the
+    three writes are key-lifecycle operations, so the exposure is small — but a
+    retry of POST /api/v1/keys is not deduplicated. Recorded as absent rather than
+    inferred from the MCP toolkit's `idempotentHint` tool annotation, which
+    describes local tool behaviour and is not an HTTP idempotency contract.
+pagination:
+  style: limit-plus-time-window
+  x-note: >-
+    Not cursor and not offset. Transfer history is narrowed by a result cap plus an
+    explicit timestamp window; there is no next-page token in the response, so a
+    client walking a long history must page by moving `toTs` backwards itself.
+  params:
+  - name: limit
+    in: query
+    type: integer
+    minimum: 1
+    maximum: 1000
+    default: 10
+    description: Maximum number of transfers to return.
+  - name: fromTs
+    in: query
+    type: integer
+    minimum: 0
+    default: 0
+    description: Start timestamp in milliseconds, inclusive.
+  - name: toTs
+    in: query
+    type: integer
+    minimum: 0
+    description: End timestamp in milliseconds, inclusive. Omit for latest.
+  response_fields:
+    collection: transfers
+    ordering: sorted by block number
+    next_page_token: null
+batching:
+  supported: true
+  operations:
+  - batchTokenTransfers
+  - batchTokenBalances
+  description: >-
+    POST variants accept multiple addresses in one request, which is the intended
+    substitute for fanning out many single-address GETs against a 4–8 req/10s budget.
+field_expansion:
+  supported: false
+metadata:
+  supported: false
+request_tracing:
+  request_id_header: null
+  x-note: No correlation/request-id header is documented on request or response.
+versioning:
+  scheme: uri-path
+  current: v1
+  path_prefix: /api/v1
+  spec_version: 1.0.0
+  see: lifecycle/tether-lifecycle.yml
+error_envelope:
+  media_type: application/json
+  shape: '{error, message, status}'
+  rfc9457: false
+  see: errors/tether-problem-types.yml
+rate_limit_signalling:
+  status_code: 429
+  headers: none documented
+  per_endpoint_budgets: rate-limits/tether-rate-limits.yml
+content_negotiation:
+  request: application/json
+  response: application/json
+agent_conventions:
+  x-note: >-
+    Tether's agent-facing conventions live on the MCP/skill side, not the HTTP side.
+    Two provider-published rules are worth carrying: (1) every write operation
+    requires explicit human confirmation, implemented as an MCP elicitation; (2) the
+    published Agent Skill mandates fee estimation before sending and carries prompt-
+    injection detection rules and mandatory key-cleanup patterns.
+  see:
+  - mcp/tether-mcp.yml
+  - skills/_index.yml
+x-evidence:
+  fetched: '2026-08-05'
+  urls:
+  - url: https://docs.wdk.tether.io/tools/indexer-api/api-reference
+    http_status: 200
+  - url: https://wdk-api.tether.io/docs/json
+    http_status: 200

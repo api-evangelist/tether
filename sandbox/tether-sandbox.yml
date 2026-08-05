@@ -1,0 +1,76 @@
+generated: '2026-08-05'
+method: searched
+source: https://docs.wdk.tether.io/
+x-note: >-
+  Tether publishes no test-mode API keys, no magic test values and no fixture
+  tooling — there is no test-vs-live key separation because there is only one key
+  type, issued free. What it DOES publish is a real testnet path (Sepolia is a
+  first-class indexer chain) and a repeated, explicit operational instruction to use
+  a dedicated low-value development wallet. Captured as the shape it actually has
+  rather than forced into the payments-sandbox template.
+test_vs_live:
+  key_modes: none
+  key_prefixes: none
+  x-note: >-
+    A single X-API-KEY type covers all use. Keys are self-service via
+    POST /api/v1/keys or the registration form, and are addressed by hash for
+    deletion (DELETE /api/v1/keys/{hashedKey}), so rotating a compromised key does
+    not require exposing its value.
+testnets:
+- name: Sepolia
+  chain_id: sepolia
+  indexer_supported: true
+  tokens:
+  - usdt
+  evidence: >-
+    `sepolia` appears in the blockchain path-parameter enum of the live OpenAPI and
+    in the response of GET /api/v1/chains, alongside the mainnets.
+  x-note: The only testnet the hosted Indexer API indexes.
+custom_testnets:
+  supported: true
+  mechanism: >-
+    `wdk network create` accepts a network spec with a `testnet: boolean` field and
+    an optional `indexerSlug`. Without an indexerSlug, `wdk get history` is
+    unavailable for that network — so a self-defined testnet gets wallet operations
+    but not indexed history.
+  docs: https://docs.wdk.tether.io/cli/guides/custom-networks
+published_safety_guidance:
+- source: https://docs.wdk.tether.io/ai/mcp-toolkit/get-started
+  guidance: >-
+    "Your seed phrase is stored locally in .vscode/mcp.json, which is gitignored.
+    Always use a dedicated development wallet with limited funds."
+- source: https://docs.wdk.tether.io/cli
+  guidance: >-
+    "Test integrations with a dedicated wallet and limited funds before relying on
+    them."
+- source: https://docs.wdk.tether.io/cli/reference/security-model
+  guidance: Review the security model before unlocking a funded wallet or granting an
+    agent access.
+- source: https://docs.wdk.tether.io/ai/agent-skills
+  guidance: >-
+    All write operations require explicit human confirmation; the skill instructs
+    agents to estimate fees before sending and includes prompt-injection protection
+    guidance.
+dry_run_pattern:
+  supported: true
+  mechanism: >-
+    Every write path in the MCP toolkit and CLI has a paired quote/preview
+    operation — quoteSendTransaction, quoteTransfer, quoteSwap, quoteBridge,
+    quoteSupply, quoteWithdraw, quoteBorrow, quoteRepay, quoteBuy, quoteSell, and
+    `wdk send --preview`. This is the provider's substitute for a sandbox: rehearse
+    against mainnet, then confirm.
+not_published:
+- test-mode API keys
+- test card numbers / test bank accounts
+- hosted test tokens or fixtures
+- test clocks or time simulation
+- event/webhook trigger tooling
+x-evidence:
+  fetched: '2026-08-05'
+  urls:
+  - url: https://wdk-api.tether.io/api/v1/chains
+    http_status: 200
+  - url: https://docs.wdk.tether.io/cli/guides/custom-networks
+    http_status: 200
+  - url: https://docs.wdk.tether.io/ai/mcp-toolkit/get-started
+    http_status: 200

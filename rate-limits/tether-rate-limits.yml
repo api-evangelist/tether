@@ -1,0 +1,44 @@
+generated: '2026-08-05'
+method: searched
+source: https://docs.wdk.tether.io/tools/indexer-api/api-reference
+api: WDK Indexer API
+base_url: https://wdk-api.tether.io
+signalling:
+  status_code: 429
+  error_body: '{"error": "...", "message": "..."}'
+  headers_documented: false
+  x-note: >-
+    The docs publish a 429 status and an error envelope but do NOT document any
+    rate-limit response headers (no X-RateLimit-*, no RateLimit-* per RFC 9331, no
+    Retry-After). A client can only discover its remaining budget by being refused.
+    Recorded as an honest gap, not inferred.
+scope: per API key
+rate_limits:
+- endpoint: GET /api/v1/health
+  operationId: getHealth
+  limit_count: 10
+  limit_period: 1 hour
+- endpoint: GET /api/v1/chains
+  operationId: listChains
+  limit_count: 60
+  limit_period: 1 minute
+- endpoint: GET /api/v1/{blockchain}/{token}/{address}/token-balances
+  operationId: getTokenBalances
+  limit_count: 4
+  limit_period: 10 seconds
+- endpoint: GET /api/v1/{blockchain}/{token}/{address}/token-transfers
+  operationId: getTokenTransfers
+  limit_count: 8
+  limit_period: 10 seconds
+- endpoint: POST /api/v1/batch/token-transfers
+  operationId: batchTokenTransfers
+  limit_count: 8
+  limit_period: 10 seconds
+- endpoint: POST /api/v1/batch/token-balances
+  operationId: batchTokenBalances
+  limit_count: 4
+  limit_period: 10 seconds
+x-evidence:
+  fetched: '2026-08-05'
+  url: https://docs.wdk.tether.io/tools/indexer-api/api-reference
+  http_status: 200

@@ -1,0 +1,82 @@
+generated: '2026-08-05'
+method: searched
+source: https://docs.wdk.tether.io/overview/changelog
+versioning:
+  api:
+    scheme: uri-path
+    current: v1
+    path_prefix: /api/v1
+    spec_version: 1.0.0
+    docs: https://docs.wdk.tether.io/tools/indexer-api/api-reference
+  sdk:
+    scheme: semver
+    channel: beta
+    x-note: >-
+      Every WDK package is on a 1.0.0-beta.* line (core at 1.0.0-beta.15, CLI at
+      1.0.0-beta.1, MCP Toolkit at 1.0.0-beta.1). The docs carry explicit beta
+      warnings on the CLI and MCP Toolkit pages stating "APIs may change between
+      releases". Breaking changes are called out inline in the changelog with a
+      [Breaking] marker — e.g. wdk-utils 1.0.0-beta.11 changing validateAddress()
+      result shape.
+    releases: https://github.com/tetherto/wdk/releases
+maturity: beta
+deprecation:
+  policy_url: null
+  policy_published: false
+  sunset_header: false
+  x-note: >-
+    No published deprecation or sunset policy for either the REST API or the SDK,
+    and no RFC 8594 Sunset/Deprecation header support documented. Breaking changes
+    are announced only in the rolling changelog. This is the clearest operational
+    gap in an otherwise well-documented surface — a consumer has no stated notice
+    period. THE PROVIDER CAN FIX THIS.
+deprecated_operations: []
+sla:
+  url: null
+  uptime_target: null
+status_page:
+  url: null
+  x-note: >-
+    No status page found. status.tether.io, status.tether.to and status.wdk.tether.io
+    do not resolve. https://tether.statuspage.io returns 200 but is a DIFFERENT
+    company's parked instance (status.tether.co.nz, "Page Inactive") and was rejected
+    rather than credited. The nearest real signal is the API's own health endpoint.
+  no_statuspage_pointer_emitted: true
+health_endpoint:
+  url: https://wdk-api.tether.io/api/v1/health
+  operationId: getHealth
+  method: GET
+  auth_required: false
+  rate_limit: 10 requests / 1 hour
+  shape: '{status, timestamp, summary{healthy,unhealthy,total}, checks{…}}'
+  observed:
+    fetched: '2026-08-05'
+    http_status: 503
+    status: degraded
+    summary:
+      healthy: 14
+      unhealthy: 2
+      total: 16
+  x-note: >-
+    Per-chain indexer health is genuinely public and unauthenticated, which is more
+    than many providers expose — but it is an endpoint, not a status page with
+    incident history, and the 10-req/hour budget makes it unsuitable for polling.
+support:
+  url: https://docs.wdk.tether.io/overview/support
+  partner_program: https://docs.wdk.tether.io/overview/partner-program
+security_disclosure:
+  bug_bounty: https://tether.io/bug-bounty/
+  see: security/tether-vulnerability-disclosure.yml
+x-evidence:
+  fetched: '2026-08-05'
+  urls:
+  - url: https://docs.wdk.tether.io/overview/changelog
+    http_status: 200
+  - url: https://wdk-api.tether.io/api/v1/health
+    http_status: 503
+  - url: https://status.tether.io
+    http_status: 0
+    note: DNS does not resolve
+  - url: https://tether.statuspage.io
+    http_status: 200
+    note: rejected — different company (tether.co.nz), page inactive

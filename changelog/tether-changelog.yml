@@ -1,0 +1,103 @@
+generated: '2026-08-05'
+method: searched
+source: https://docs.wdk.tether.io/overview/changelog
+scope: >-
+  WDK SDK, CLI, MCP Toolkit and protocol modules. The WDK Indexer REST API has no
+  separate changelog; it is versioned only by its /api/v1 path prefix and its
+  OpenAPI info.version (1.0.0).
+scheme: dated-entries-with-semver-per-module
+format: >-
+  Each dated entry groups changes under "What's New", "Fixes" and "Changes", and
+  every line names the module, the exact released version, and a link to that
+  version's GitHub release or tag. Breaking changes are marked inline with
+  [Breaking].
+current_versions:
+  wdk-core: 1.0.0-beta.15
+  wdk-cli: 1.0.0-beta.1
+  wdk-mcp-toolkit: 1.0.0-beta.1
+  wdk-wallet-evm: 1.0.0-beta.16
+  wdk-wallet-btc: 1.0.0-beta.12
+  wdk-wallet-spark: 1.0.0-beta.22
+window: recent entries only — the live changelog is the source of truth
+entries:
+- date: '2026-08-01'
+  additions:
+  - module: swidge-symbiosis
+    version: 1.3.0
+    highlight: >-
+      Execute TON, Tron and Solana source routes when the bound wallet account
+      supports the required transaction format, probed at execution time. Wallets
+      without the capability keep quote-only behaviour and throw UnsupportedRouteError.
+      Adds a runnable end-to-end quote/execute/track example.
+  breaking: []
+- date: '2026-07-30'
+  additions:
+  - module: wdk-core
+    version: 1.0.0-beta.15
+    highlight: >-
+      Global and account-scoped SDA protocol registration, getSdaProtocol(), and
+      policy coverage for deposit-address creation, renewal, recovery and
+      disablement. Governed proxies now hide keyPair and underscore-prefixed
+      members from direct access and own-property reflection, and reject freezing.
+  - module: wallet-evm-erc-4337
+    version: 1.0.0-beta.14
+    highlight: >-
+      Opt-in ERC-4337 nonce lanes via `parallel` and `nonceKey` for sign, send and
+      transfer, replacing local sequential nonce reservation.
+  - module: create-wdk-module
+    version: 1.0.0-beta.3
+    highlight: Adds the `sda` scaffold type and wdk-protocol-sda-<provider> template.
+  breaking:
+  - module: wdk-utils
+    version: 1.0.0-beta.11
+    highlight: >-
+      [Breaking] CAIP-2-aware validateAddress() dispatch for Bitcoin, EVM, Solana,
+      Spark and Tron. Bitcoin success results replace `network` with
+      `compatibleNetworks` and rename mainnet to `bitcoin`.
+  fixes:
+  - module: worklet-bundler
+    version: 1.0.0-beta.7
+    highlight: >-
+      Check root, nested, scoped and symlinked package trees before deferring an
+      optional peer, preventing MODULE_NOT_FOUND at runtime.
+  changes:
+  - module: wallet-btc
+    version: 1.0.0-beta.12
+    highlight: Version-only source update plus lockfile refresh (valibot 1.4.1 → 1.4.2).
+  - module: wallet-ton
+    version: 1.0.0-beta.12
+    highlight: Version-only source update plus dev lockfile refresh (fast-uri 3.1.2 → 3.1.4).
+  - module: wallet-ton-gasless
+    version: 1.0.0-beta.8
+    highlight: Version-only source update plus dev lockfile refresh.
+  - module: swidge-symbiosis
+    version: 1.2.0
+    highlight: >-
+      30-second default API timeout, configurable X-Partner-Id, positive-integer
+      amount validation, non-zero allowance reset before approval. TON joins Tron
+      and Solana as quote-only; Monero and Zcash custodial routes excluded.
+- date: '2026-07-29'
+  additions:
+  - module: rgb-lightning
+    version: 0.1.0-beta.15
+    highlight: >-
+      Community-maintained RGB Lightning wallet and node module — BTC and RGB
+      balances, peers and channels, Lightning and RGB invoices and payments, LSP
+      and Lightning Address flows, APay, and VSS backup.
+  changes:
+  - module: lending-aave-evm
+    version: 1.0.0-beta.5
+    highlight: >-
+      Wallet and ethers dependency refresh with no public runtime or type change.
+      ERC-4337 integrations must now provide safeModulesVersion.
+- date: '2026-07-28'
+  additions:
+  - module: swidge-symbiosis
+    version: 1.1.1
+    highlight: >-
+      Typed provider errors, named SymbiosisProtocol and ISwidgeProtocol exports
+      alongside the default export.
+x-evidence:
+  fetched: '2026-08-05'
+  url: https://docs.wdk.tether.io/overview/changelog
+  http_status: 200

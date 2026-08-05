@@ -1,0 +1,183 @@
+generated: '2026-08-05'
+method: derived
+source: mcp/tether-mcp.yml + openapi/tether-wdk-indexer-openapi-original.yml
+summary: >-
+  Tether's agent surface (WDK MCP Toolkit, 34 documented tools) and its only public
+  REST surface (the WDK Indexer API, 9 operations) barely overlap. The MCP toolkit is
+  a LOCAL, self-custodial wallet server: almost every tool executes against chain RPC
+  endpoints and DeFi protocol contracts through WDK wallet modules, not against a
+  Tether-hosted HTTP API. Exactly two MCP tools are backed by the public REST API —
+  the indexer pair — and they are the only rows with a real binding. Conversely the
+  REST API's key-management operations have no MCP tool at all. This is a genuine
+  surface divergence, recorded rather than papered over.
+surfaces:
+  openapi:
+    file: openapi/tether-wdk-indexer-openapi-original.yml
+    spec: OpenAPI 3.0.0
+    base_url: https://wdk-api.tether.io
+    gated: false
+    x-note: >-
+      Spec is publicly readable at https://wdk-api.tether.io/docs/json (and /docs/yaml).
+      It declares no operationIds; the operationIds used below are the ones assigned
+      in overlays/tether-wdk-indexer-overlay.yaml and are cross-referenced by
+      method + path so the mapping stands without the overlay.
+    calling_it: Requires an X-API-KEY issued via https://wdk-api.tether.io/register.
+  mcp:
+    server: '@tetherto/wdk-mcp-toolkit'
+    transport: stdio
+    url: null
+    gated: n/a
+    x-note: >-
+      No hosted MCP endpoint exists, so `tools/list` could not be called over the
+      network. The tool list below is taken from the provider's published API
+      Reference, which documents each tool's parameters and returns. Confidence is
+      set from that documentation, not from live introspection.
+  graphql:
+    endpoint: null
+    x-note: No GraphQL surface found.
+crosswalk:
+- tool: getIndexerTokenBalance
+  category: indexer
+  rest:
+  - getTokenBalances
+  rest_paths:
+  - GET /api/v1/{blockchain}/{token}/{address}/token-balances
+  binding: rest
+  confidence: high
+  note: >-
+    The MCP toolkit's `useIndexer({ apiKey })` client calls the WDK Indexer API
+    directly; the tool's chain/token/address inputs map 1:1 onto the operation's
+    three path parameters, and the tool inherits that operation's response schema.
+- tool: getTokenTransfers
+  category: indexer
+  rest:
+  - getTokenTransfers
+  rest_paths:
+  - GET /api/v1/{blockchain}/{token}/{address}/token-transfers
+  binding: rest
+  confidence: high
+  note: >-
+    Same indexer client. The tool's optional windowing arguments correspond to the
+    operation's `limit`, `fromTs` and `toTs` query parameters.
+mcp_only:
+- tool: getAddress
+  reason: Derived locally from the BIP-39 seed by a WDK wallet module. No REST equivalent.
+- tool: getBalance
+  reason: Read straight from chain RPC by the wallet module, not from Tether infrastructure.
+- tool: getTokenBalance
+  reason: Chain-RPC token read via the wallet module; distinct from the indexer-backed
+    getIndexerTokenBalance.
+- tool: getFeeRates
+  reason: Chain fee estimation via the wallet module / node provider.
+- tool: getMaxSpendableBtc
+  reason: Bitcoin UTXO coin-selection computed locally in wdk-wallet-btc.
+- tool: quoteSendTransaction
+  reason: Local fee estimation against chain RPC.
+- tool: quoteTransfer
+  reason: Local fee estimation against chain RPC.
+- tool: sendTransaction
+  reason: Signs locally and broadcasts to chain RPC. Write operation, human confirmation
+    required. No REST endpoint exists — self-custody is the design.
+- tool: transfer
+  reason: Signs locally and broadcasts a token transfer. Write operation.
+- tool: sign
+  reason: Local key operation.
+- tool: verify
+  reason: Local cryptographic verification.
+- tool: getCurrentPrice
+  reason: Backed by the Bitfinex public price API through wdk-pricing-bitfinex-http,
+    not by a Tether-published REST operation.
+- tool: getHistoricalPrice
+  reason: Bitfinex-backed historical OHLCV, same as above.
+- tool: quoteSwap
+  reason: Velora DEX aggregator (third-party) via wdk-protocol-swap-velora-evm.
+- tool: swap
+  reason: Velora DEX aggregator; on-chain execution. Write operation.
+- tool: quoteBridge
+  reason: USDT0 / LayerZero bridge quoting via wdk-protocol-bridge-usdt0-evm.
+- tool: bridge
+  reason: USDT0 / LayerZero bridge execution. Write operation.
+- tool: quoteSupply
+  reason: Aave V3 protocol read via wdk-protocol-lending-aave-evm.
+- tool: supply
+  reason: Aave V3 on-chain supply. Write operation.
+- tool: quoteWithdraw
+  reason: Aave V3 protocol read.
+- tool: withdraw
+  reason: Aave V3 on-chain withdraw. Write operation.
+- tool: quoteBorrow
+  reason: Aave V3 protocol read.
+- tool: borrow
+  reason: Aave V3 on-chain borrow. Write operation.
+- tool: quoteRepay
+  reason: Aave V3 protocol read.
+- tool: repay
+  reason: Aave V3 on-chain repay. Write operation.
+- tool: quoteBuy
+  reason: MoonPay on-ramp (third-party) via wdk-protocol-fiat-moonpay.
+- tool: buy
+  reason: MoonPay on-ramp order creation.
+- tool: quoteSell
+  reason: MoonPay off-ramp quote.
+- tool: sell
+  reason: MoonPay off-ramp order creation.
+- tool: getTransactionDetail
+  reason: MoonPay transaction lookup.
+- tool: getSupportedCryptoAssets
+  reason: MoonPay capability discovery.
+- tool: getSupportedFiatCurrencies
+  reason: MoonPay capability discovery.
+- tool: getSupportedCountries
+  reason: MoonPay capability discovery.
+rest_only:
+- capability: Service health
+  operations:
+  - getHealth
+  paths:
+  - GET /api/v1/health
+  reason: Operational probe; not surfaced as an agent tool.
+- capability: Chain and token discovery
+  operations:
+  - listChains
+  paths:
+  - GET /api/v1/chains
+  reason: >-
+    The MCP server exposes chain discovery through server-side query methods
+    (getChains, getRegisteredTokens) rather than as a callable MCP tool, so the REST
+    operation has no tool counterpart.
+- capability: API key self-service
+  operations:
+  - listApiKeys
+  - createApiKey
+  - deleteApiKey
+  paths:
+  - GET /api/v1/keys
+  - POST /api/v1/keys
+  - DELETE /api/v1/keys/{hashedKey}
+  reason: >-
+    Credential lifecycle is deliberately out of the agent tool surface; the MCP
+    toolkit takes an already-issued indexer API key via useIndexer({ apiKey }).
+- capability: Batch indexer reads
+  operations:
+  - batchTokenTransfers
+  - batchTokenBalances
+  paths:
+  - POST /api/v1/batch/token-transfers
+  - POST /api/v1/batch/token-balances
+  reason: >-
+    The REST API supports multi-address batch lookups; the MCP indexer tools are
+    single-address only. A real capability the agent surface does not reach.
+coverage:
+  tools_named: 34
+  tools_bound_to_rest: 2
+  mcp_only: 32
+  rest_operations_total: 9
+  rest_operations_with_a_tool: 2
+  rest_only_operations: 7
+x-evidence:
+  fetched: '2026-08-05'
+  urls:
+  - url: https://docs.wdk.tether.io/ai/mcp-toolkit/api-reference
+    http_status: 200
+  - url: https://wdk-api.tether.io/docs/json
+    http_status: 200
