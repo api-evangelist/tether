@@ -32,27 +32,88 @@ tags:
 - MCP
 - Open Source
 apis:
-- aid: tether:wdk-indexer
-  name: WDK Indexer API
-  description: 'The WDK Indexer REST API provides read access to token balances and
-    token-transfer history across Ethereum, Arbitrum, Avalanche, Polygon, Sepolia,
-    Tron, TON, Bitcoin, Spark and Plasma for USD₮, XAU₮, USA₮ and BTC. Nine operations
-    cover health, chain/token discovery, API-key self-service, single-address balances
-    and transfers, and batch balance/transfer lookups. Authentication is an X-API-KEY
-    header issued through a free registration form; per-endpoint rate limits are published.'
+- aid: tether:tether-api-keys-api
+  name: Tether API Keys API
+  description: The API Keys API from Tether — 2 operation(s) for api keys.
   humanURL: https://docs.wdk.tether.io/tools/indexer-api
   baseURL: https://wdk-api.tether.io
   tags:
-  - Blockchain
-  - Indexer
-  - Balances
-  - Transfers
-  - Stablecoins
+  - API Keys
   properties:
   - type: OpenAPI
-    url: openapi/tether-wdk-indexer-openapi-original.yml
-  - type: Overlay
-    url: overlays/tether-wdk-indexer-overlay.yaml
+    url: openapi/tether-api-keys-api-openapi.yml
+  - type: Documentation
+    url: https://docs.wdk.tether.io/tools/indexer-api
+  - type: APIReference
+    url: https://docs.wdk.tether.io/tools/indexer-api/api-reference
+  - type: GettingStarted
+    url: https://docs.wdk.tether.io/tools/indexer-api/get-started
+  - type: SignUp
+    url: https://wdk-api.tether.io/register
+- aid: tether:tether-chains-api
+  name: Tether Chains API
+  description: Supported blockchains and token discovery
+  humanURL: https://docs.wdk.tether.io/tools/indexer-api
+  baseURL: https://wdk-api.tether.io
+  tags:
+  - Chains
+  properties:
+  - type: OpenAPI
+    url: openapi/tether-chains-api-openapi.yml
+  - type: Documentation
+    url: https://docs.wdk.tether.io/tools/indexer-api
+  - type: APIReference
+    url: https://docs.wdk.tether.io/tools/indexer-api/api-reference
+  - type: GettingStarted
+    url: https://docs.wdk.tether.io/tools/indexer-api/get-started
+  - type: SignUp
+    url: https://wdk-api.tether.io/register
+- aid: tether:tether-health-api
+  name: Tether Health API
+  description: Server health and status checks
+  humanURL: https://docs.wdk.tether.io/tools/indexer-api
+  baseURL: https://wdk-api.tether.io
+  tags:
+  - Health
+  properties:
+  - type: OpenAPI
+    url: openapi/tether-health-api-openapi.yml
+  - type: Documentation
+    url: https://docs.wdk.tether.io/tools/indexer-api
+  - type: APIReference
+    url: https://docs.wdk.tether.io/tools/indexer-api/api-reference
+  - type: GettingStarted
+    url: https://docs.wdk.tether.io/tools/indexer-api/get-started
+  - type: SignUp
+    url: https://wdk-api.tether.io/register
+- aid: tether:tether-token-balances-api
+  name: Tether Token Balances API
+  description: Query current token balances for addresses
+  humanURL: https://docs.wdk.tether.io/tools/indexer-api
+  baseURL: https://wdk-api.tether.io
+  tags:
+  - Token Balances
+  properties:
+  - type: OpenAPI
+    url: openapi/tether-token-balances-api-openapi.yml
+  - type: Documentation
+    url: https://docs.wdk.tether.io/tools/indexer-api
+  - type: APIReference
+    url: https://docs.wdk.tether.io/tools/indexer-api/api-reference
+  - type: GettingStarted
+    url: https://docs.wdk.tether.io/tools/indexer-api/get-started
+  - type: SignUp
+    url: https://wdk-api.tether.io/register
+- aid: tether:tether-token-transfers-api
+  name: Tether Token Transfers API
+  description: Query token transfer history for addresses
+  humanURL: https://docs.wdk.tether.io/tools/indexer-api
+  baseURL: https://wdk-api.tether.io
+  tags:
+  - Token Transfers
+  properties:
+  - type: OpenAPI
+    url: openapi/tether-token-transfers-api-openapi.yml
   - type: Documentation
     url: https://docs.wdk.tether.io/tools/indexer-api
   - type: APIReference
@@ -92,7 +153,7 @@ common:
 - type: Security
   url: https://tether.io/bug-bounty/
 - type: OpenAPI
-  url: openapi/tether-wdk-indexer-openapi-original.yml
+  url: openapi/_original/tether-wdk-indexer-openapi-original.yml
 - type: Overlay
   url: overlays/tether-wdk-indexer-overlay.yaml
 - type: LLMsTxt
