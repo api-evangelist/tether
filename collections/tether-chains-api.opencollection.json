@@ -1,0 +1,29 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "WDK Indexer Chains API",
+    "version": "1.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Chains",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get supported blockchains and tokens",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v1/chains"
+          },
+          "docs": "Returns the list of all supported blockchains and their available tokens. Endpoint to discover valid blockchain and token combinations before calling other endpoints. This endpoint reads directly from the server configuration and requires no authentication."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

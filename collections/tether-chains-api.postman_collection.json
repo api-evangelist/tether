@@ -1,0 +1,143 @@
+{
+  "item": [
+    {
+      "id": "edeb8867-7708-4744-a7c8-438bc7886c25",
+      "name": "Chains",
+      "description": {
+        "content": "Supported blockchains and token discovery",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "cfc76f63-e25a-4298-b566-37fd48f4d722",
+          "name": "Get supported blockchains and tokens",
+          "request": {
+            "name": "Get supported blockchains and tokens",
+            "description": {
+              "content": "Returns the list of all supported blockchains and their available tokens. Endpoint to discover valid blockchain and token combinations before calling other endpoints. This endpoint reads directly from the server configuration and requires no authentication.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "chains"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "d6b58ccd-326c-4568-8125-b76db3a7bea8",
+              "name": "List of supported blockchains with their tokens and case sensitivity rules",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "chains"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"chains\": [\n    {\n      \"name\": \"string\",\n      \"tokens\": [\n        \"string\",\n        \"string\"\n      ],\n      \"caseSensitive\": {\n        \"address\": false,\n        \"tx\": false,\n        \"block\": false\n      }\n    },\n    {\n      \"name\": \"string\",\n      \"tokens\": [\n        \"string\",\n        \"string\"\n      ],\n      \"caseSensitive\": {\n        \"address\": true,\n        \"tx\": true,\n        \"block\": false\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "e29d4570-e651-4f01-adc1-8eb0f5c1d3db",
+              "name": "Internal Server Error - indexer service unavailable or unexpected failure",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "chains"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"message\": \"string\",\n  \"status\": 1676.8975799246566\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "/",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "e73bc80b-bffb-43c3-9684-b7c904f3b758",
+    "name": "WDK Indexer Chains API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "API for querying blockchain token transfers and balances across multiple networks. Authenticated endpoints require an API key passed via the X-API-KEY header.",
+      "type": "text/plain"
+    }
+  }
+}

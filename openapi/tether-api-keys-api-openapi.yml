@@ -1,0 +1,383 @@
+openapi: 3.2.0
+info:
+  title: WDK Indexer API Keys API
+  description: API for querying blockchain token transfers and balances across multiple networks. Authenticated
+    endpoints require an API key passed via the X-API-KEY header.
+  version: 1.0.0
+tags:
+- name: API Keys
+paths:
+  /api/v1/keys:
+    get:
+      summary: List API keys for the authenticated owner
+      tags:
+      - API Keys
+      description: Returns all API keys belonging to the owner of the key used for authentication.
+      security:
+      - ApiKeyAuth: []
+      responses:
+        '200':
+          description: List of API keys for the owner
+          content:
+            application/json:
+              schema:
+                description: List of API keys for the owner
+                type: object
+                properties:
+                  keys:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        hashedKey:
+                          type: string
+                        owner:
+                          type: string
+                        ttl:
+                          type: number
+                        label:
+                          type: string
+                        createdAt:
+                          type: number
+                        lastActive:
+                          type: number
+                        max:
+                          type: number
+                        timeWindow:
+                          type: number
+                      additionalProperties: false
+                additionalProperties: false
+        '401':
+          description: Unauthorized - expired API key
+          content:
+            application/json:
+              schema:
+                description: Unauthorized - expired API key
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Authentication error type
+                  message:
+                    type: string
+                    description: Authentication error details
+                  status:
+                    type: number
+                    description: HTTP status code
+                additionalProperties: false
+        '403':
+          description: Forbidden - missing or invalid API key
+          content:
+            application/json:
+              schema:
+                description: Forbidden - missing or invalid API key
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Authorization error type
+                  message:
+                    type: string
+                    description: Authorization error details
+                  status:
+                    type: number
+                    description: HTTP status code
+                additionalProperties: false
+        '429':
+          description: Too Many Requests - rate limit exceeded
+          content:
+            application/json:
+              schema:
+                description: Too Many Requests - rate limit exceeded
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Rate limit error type
+                  message:
+                    type: string
+                    description: Rate limit error details
+                  status:
+                    type: number
+                    description: HTTP status code
+                additionalProperties: false
+        '500':
+          description: Internal Server Error - indexer service unavailable or unexpected failure
+          content:
+            application/json:
+              schema:
+                description: Internal Server Error - indexer service unavailable or unexpected failure
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error type
+                  message:
+                    type: string
+                    description: Error details
+                  status:
+                    type: number
+                    description: HTTP status code
+                additionalProperties: false
+    post:
+      summary: Create a new API key
+      tags:
+      - API Keys
+      description: Creates a new API key for the authenticated owner. Returns the plaintext key once;
+        store it securely.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                label:
+                  type: string
+                  description: Optional label for the key
+                ttl:
+                  type: number
+                  description: Time-to-live in ms; 0 = no expiry
+              additionalProperties: false
+      security:
+      - ApiKeyAuth: []
+      responses:
+        '200':
+          description: New API key created
+          content:
+            application/json:
+              schema:
+                description: New API key created
+                type: object
+                properties:
+                  key:
+                    type: string
+                    description: Plaintext API key - store securely, shown only once
+                  hashedKey:
+                    type: string
+                  owner:
+                    type: string
+                  ttl:
+                    type: number
+                  label:
+                    type: string
+                  createdAt:
+                    type: number
+                  lastActive:
+                    type: number
+                additionalProperties: false
+        '400':
+          description: Bad Request - invalid parameters, address format, blockchain, or token
+          content:
+            application/json:
+              schema:
+                description: Bad Request - invalid parameters, address format, blockchain, or token
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error type
+                  message:
+                    type: string
+                    description: Human-readable error description
+                  status:
+                    type: number
+                    description: HTTP status code
+                additionalProperties: false
+        '401':
+          description: Unauthorized - expired API key
+          content:
+            application/json:
+              schema:
+                description: Unauthorized - expired API key
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Authentication error type
+                  message:
+                    type: string
+                    description: Authentication error details
+                  status:
+                    type: number
+                    description: HTTP status code
+                additionalProperties: false
+        '403':
+          description: Forbidden - missing or invalid API key
+          content:
+            application/json:
+              schema:
+                description: Forbidden - missing or invalid API key
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Authorization error type
+                  message:
+                    type: string
+                    description: Authorization error details
+                  status:
+                    type: number
+                    description: HTTP status code
+                additionalProperties: false
+        '429':
+          description: Too Many Requests - rate limit exceeded
+          content:
+            application/json:
+              schema:
+                description: Too Many Requests - rate limit exceeded
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Rate limit error type
+                  message:
+                    type: string
+                    description: Rate limit error details
+                  status:
+                    type: number
+                    description: HTTP status code
+                additionalProperties: false
+        '500':
+          description: Internal Server Error - indexer service unavailable or unexpected failure
+          content:
+            application/json:
+              schema:
+                description: Internal Server Error - indexer service unavailable or unexpected failure
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error type
+                  message:
+                    type: string
+                    description: Error details
+                  status:
+                    type: number
+                    description: HTTP status code
+                additionalProperties: false
+  /api/v1/keys/{hashedKey}:
+    delete:
+      summary: Revoke an API key
+      tags:
+      - API Keys
+      description: Revokes an API key owned by the authenticated owner. The key cannot be used after revocation.
+      parameters:
+      - schema:
+          type: string
+        in: path
+        name: hashedKey
+        required: true
+        description: Hashed key identifier from GET /api/v1/keys
+      security:
+      - ApiKeyAuth: []
+      responses:
+        '200':
+          description: Key revoked
+          content:
+            application/json:
+              schema:
+                description: Key revoked
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                additionalProperties: false
+        '401':
+          description: Unauthorized - expired API key
+          content:
+            application/json:
+              schema:
+                description: Unauthorized - expired API key
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Authentication error type
+                  message:
+                    type: string
+                    description: Authentication error details
+                  status:
+                    type: number
+                    description: HTTP status code
+                additionalProperties: false
+        '403':
+          description: Forbidden - missing or invalid API key
+          content:
+            application/json:
+              schema:
+                description: Forbidden - missing or invalid API key
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Authorization error type
+                  message:
+                    type: string
+                    description: Authorization error details
+                  status:
+                    type: number
+                    description: HTTP status code
+                additionalProperties: false
+        '404':
+          description: Not Found - API key not found or access denied
+          content:
+            application/json:
+              schema:
+                description: Not Found - API key not found or access denied
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error type
+                  message:
+                    type: string
+                    description: Error details
+                  status:
+                    type: number
+                    description: HTTP status code
+                additionalProperties: false
+        '429':
+          description: Too Many Requests - rate limit exceeded
+          content:
+            application/json:
+              schema:
+                description: Too Many Requests - rate limit exceeded
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Rate limit error type
+                  message:
+                    type: string
+                    description: Rate limit error details
+                  status:
+                    type: number
+                    description: HTTP status code
+                additionalProperties: false
+        '500':
+          description: Internal Server Error - indexer service unavailable or unexpected failure
+          content:
+            application/json:
+              schema:
+                description: Internal Server Error - indexer service unavailable or unexpected failure
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error type
+                  message:
+                    type: string
+                    description: Error details
+                  status:
+                    type: number
+                    description: HTTP status code
+                additionalProperties: false
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-KEY
+      description: API key obtained via the registration form. Include in the X-API-KEY header for all
+        authenticated requests.

@@ -1,0 +1,29 @@
+{
+  "provider": "tether",
+  "sources": [
+    "tether-api-keys-api-openapi.yml",
+    "tether-chains-api-openapi.yml",
+    "tether-health-api-openapi.yml",
+    "tether-token-balances-api-openapi.yml",
+    "tether-token-transfers-api-openapi.yml"
+  ],
+  "outputs": [
+    "tether-api-keys-api-openapi.yml",
+    "tether-chains-api-openapi.yml",
+    "tether-health-api-openapi.yml",
+    "tether-token-balances-api-openapi.yml",
+    "tether-token-transfers-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [
+    "tether-api-keys-api-openapi.yml: upgraded openapi 3.0.0 -> OpenAPI 3.2.0",
+    "tether-chains-api-openapi.yml: upgraded openapi 3.0.0 -> OpenAPI 3.2.0",
+    "tether-health-api-openapi.yml: upgraded openapi 3.0.0 -> OpenAPI 3.2.0",
+    "tether-token-balances-api-openapi.yml: upgraded openapi 3.0.0 -> OpenAPI 3.2.0",
+    "tether-token-transfers-api-openapi.yml: upgraded openapi 3.0.0 -> OpenAPI 3.2.0",
+    "apis.yml register: already-registered"
+  ],
+  "skipped": []
+}

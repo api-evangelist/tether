@@ -10,21 +10,18 @@ server:
   transport: stdio
   hosted: false
   url: null
-  x-note: >-
-    There is NO remote/hosted MCP endpoint. The WDK MCP Toolkit is a library that
-    extends the official @modelcontextprotocol/sdk McpServer; developers run it
-    locally over stdio with their own BIP-39 seed. A second, ready-made stdio server
-    ships as the `wdk-mcp` binary inside @tetherto/wdk-cli. Because keys stay on the
-    operator's machine by design, a hosted tools/list endpoint does not exist and
-    was not probed for.
-  status_note: 'Beta — docs record v1.0.0-beta.1; APIs may change between releases.'
+  x-note: There is NO remote/hosted MCP endpoint. The WDK MCP Toolkit is a library that extends the official
+    @modelcontextprotocol/sdk McpServer; developers run it locally over stdio with their own BIP-39 seed.
+    A second, ready-made stdio server ships as the `wdk-mcp` binary inside @tetherto/wdk-cli. Because
+    keys stay on the operator's machine by design, a hosted tools/list endpoint does not exist and was
+    not probed for.
+  status_note: Beta — docs record v1.0.0-beta.1; APIs may change between releases.
 alternate_servers:
 - name: wdk-mcp
   package: '@tetherto/wdk-cli'
   transport: stdio
-  description: Bundled MCP server exposing the WDK CLI's local wallet daemon to
-    MCP clients. Automated setup supported for Claude Desktop, Claude Code and
-    OpenClaw via `wdk mcp`.
+  description: Bundled MCP server exposing the WDK CLI's local wallet daemon to MCP clients. Automated
+    setup supported for Claude Desktop, Claude Code and OpenClaw via `wdk mcp`.
   docs: https://docs.wdk.tether.io/cli/guides/use-mcp-server
 capabilities:
   chains:
@@ -41,18 +38,16 @@ capabilities:
   - spark
   - ton
   - tron
-  human_confirmation: >-
-    All write operations use MCP elicitations to require explicit user approval
-    before broadcasting a transaction.
+  human_confirmation: All write operations use MCP elicitations to require explicit user approval before
+    broadcasting a transaction.
   annotations_published:
   - readOnlyHint
   - destructiveHint
   - idempotentHint
   - openWorldHint
-  extensible: Custom tools can be registered alongside built-ins using standard MCP
-    SDK patterns.
-  key_handling: Seed phrases stay local; `close()` wipes keys from memory; read and
-    write tool sets are separable.
+  extensible: Custom tools can be registered alongside built-ins using standard MCP SDK patterns.
+  key_handling: Seed phrases stay local; `close()` wipes keys from memory; read and write tool sets are
+    separable.
 tools:
 - name: getAddress
   category: wallet
@@ -162,10 +157,8 @@ tools:
 coverage:
   tools_documented: 34
   tools_claimed_by_docs: 35
-  x-note: >-
-    The overview page states "35 built-in tools"; the API Reference page enumerates
-    34 named tool headings. Recorded as observed rather than padded to match the
-    marketing count.
+  x-note: The overview page states "35 built-in tools"; the API Reference page enumerates 34 named tool
+    headings. Recorded as observed rather than padded to match the marketing count.
 x-evidence:
   fetched: '2026-08-05'
   urls:
@@ -175,3 +168,9 @@ x-evidence:
     http_status: 200
   - url: https://docs.wdk.tether.io/cli/guides/use-mcp-server
     http_status: 200
+deployment:
+  mode: local-stdio
+  verified: searched
+  tools: 35
+  checked: '2026-08-12'
+  source: catalog MCP census

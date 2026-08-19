@@ -1,0 +1,81 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "WDK Indexer API Keys API",
+    "version": "1.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "API Keys",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List API keys for the authenticated owner",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v1/keys",
+            "auth": {
+              "type": "apikey",
+              "key": "X-API-KEY",
+              "value": "{{X-API-KEY}}",
+              "placement": "header"
+            }
+          },
+          "docs": "Returns all API keys belonging to the owner of the key used for authentication."
+        },
+        {
+          "info": {
+            "name": "Create a new API key",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v1/keys",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "apikey",
+              "key": "X-API-KEY",
+              "value": "{{X-API-KEY}}",
+              "placement": "header"
+            }
+          },
+          "docs": "Creates a new API key for the authenticated owner. Returns the plaintext key once; store it securely."
+        },
+        {
+          "info": {
+            "name": "Revoke an API key",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/v1/keys/:hashedKey",
+            "params": [
+              {
+                "name": "hashedKey",
+                "value": "",
+                "type": "path",
+                "description": "Hashed key identifier from GET /api/v1/keys"
+              }
+            ],
+            "auth": {
+              "type": "apikey",
+              "key": "X-API-KEY",
+              "value": "{{X-API-KEY}}",
+              "placement": "header"
+            }
+          },
+          "docs": "Revokes an API key owned by the authenticated owner. The key cannot be used after revocation."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

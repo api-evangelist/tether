@@ -1,0 +1,1452 @@
+openapi: 3.0.0
+info:
+  title: WDK Indexer API
+  description: API for querying blockchain token transfers and balances across
+    multiple networks. Authenticated endpoints require an API key passed via the
+    X-API-KEY header.
+  version: 1.0.0
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-KEY
+      description: API key obtained via the registration form. Include in the
+        X-API-KEY header for all authenticated requests.
+  schemas: {}
+paths:
+  /api/v1/health:
+    get:
+      summary: Deep health check endpoint
+      tags:
+        - Health
+      description: Checks Redis connectivity and blockchain indexer sync status.
+        Returns HTTP 200 only when the overall status is `healthy`. Returns HTTP
+        503 for any non-healthy overall status (`degraded` or `unhealthy`), so
+        readiness probes and load balancers can rely on the HTTP status code
+        alone.
+      responses:
+        "200":
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                      - healthy
+                      - degraded
+                      - unhealthy
+                    example: healthy
+                  timestamp:
+                    type: string
+                    format: date-time
+                  summary:
+                    type: object
+                    properties:
+                      healthy:
+                        type: integer
+                        example: 10
+                      unhealthy:
+                        type: integer
+                        example: 2
+                      total:
+                        type: integer
+                        example: 12
+                  checks:
+                    type: object
+                    properties:
+                      redis:
+                        type: object
+                        properties:
+                          status:
+                            type: string
+                            enum:
+                              - healthy
+                              - unhealthy
+                            example: healthy
+                      indexers:
+                        type: object
+                        additionalProperties:
+                          type: object
+                          properties:
+                            status:
+                              type: string
+                              enum:
+                                - healthy
+                                - unhealthy
+                              example: healthy
+                            rpcLatencyMs:
+                              type: number
+                              example: 45
+                            lag:
+                              type: number
+                              example: 3
+                            db:
+                              type: object
+                              properties:
+                                status:
+                                  type: string
+                                  enum:
+                                    - healthy
+                                    - unhealthy
+                                  example: healthy
+        "503":
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                      - healthy
+                      - degraded
+                      - unhealthy
+                    example: healthy
+                  timestamp:
+                    type: string
+                    format: date-time
+                  summary:
+                    type: object
+                    properties:
+                      healthy:
+                        type: integer
+                        example: 10
+                      unhealthy:
+                        type: integer
+                        example: 2
+                      total:
+                        type: integer
+                        example: 12
+                  checks:
+                    type: object
+                    properties:
+                      redis:
+                        type: object
+                        properties:
+                          status:
+                            type: string
+                            enum:
+                              - healthy
+                              - unhealthy
+                            example: healthy
+                      indexers:
+                        type: object
+                        additionalProperties:
+                          type: object
+                          properties:
+                            status:
+                              type: string
+                              enum:
+                                - healthy
+                                - unhealthy
+                              example: healthy
+                            rpcLatencyMs:
+                              type: number
+                              example: 45
+                            lag:
+                              type: number
+                              example: 3
+                            db:
+                              type: object
+                              properties:
+                                status:
+                                  type: string
+                                  enum:
+                                    - healthy
+                                    - unhealthy
+                                  example: healthy
+  /api/v1/chains:
+    get:
+      summary: Get supported blockchains and tokens
+      tags:
+        - Chains
+      description: Returns the list of all supported blockchains and their available
+        tokens. Endpoint to discover valid blockchain and token combinations
+        before calling other endpoints. This endpoint reads directly from the
+        server configuration and requires no authentication.
+      responses:
+        "200":
+          description: List of supported blockchains with their tokens and case
+            sensitivity rules
+          content:
+            application/json:
+              schema:
+                description: List of supported blockchains with their tokens and case
+                  sensitivity rules
+                type: object
+                properties:
+                  chains:
+                    type: array
+                    description: All supported blockchains.
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                          description: Blockchain identifier used as the {blockchain} path parameter in
+                            other endpoints.
+                        tokens:
+                          type: array
+                          description: Token identifiers available on this blockchain, used as the {token}
+                            path parameter.
+                          items:
+                            type: string
+                        caseSensitive:
+                          type: object
+                          description: Case sensitivity rules. If present, addresses are preserved as-is
+                            (case-sensitive). If absent, addresses are
+                            automatically lowercased.
+                          properties:
+                            address:
+                              oneOf:
+                                - type: boolean
+                                - type: string
+                              description: Indicates address case sensitivity. When the caseSensitive object
+                                is present, addresses are not lowercased
+                                regardless of this field value.
+                            tx:
+                              type: boolean
+                              description: true = transaction hashes are case-sensitive.
+                            block:
+                              type: boolean
+                              description: true = block identifiers are case-sensitive.
+                          additionalProperties: false
+                      required:
+                        - name
+                        - tokens
+                      additionalProperties: false
+                additionalProperties: false
+        "500":
+          description: Internal Server Error - indexer service unavailable or unexpected
+            failure
+          content:
+            application/json:
+              schema:
+                description: Internal Server Error - indexer service unavailable or unexpected
+                  failure
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error type
+                  message:
+                    type: string
+                    description: Error details
+                  status:
+                    type: number
+                    description: HTTP status code
+                additionalProperties: false
+  /api/v1/keys:
+    get:
+      summary: List API keys for the authenticated owner
+      tags:
+        - API Keys
+      description: Returns all API keys belonging to the owner of the key used for
+        authentication.
+      security:
+        - ApiKeyAuth: []
+      responses:
+        "200":
+          description: List of API keys for the owner
+          content:
+            application/json:
+              schema:
+                description: List of API keys for the owner
+                type: object
+                properties:
+                  keys:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        hashedKey:
+                          type: string
+                        owner:
+                          type: string
+                        ttl:
+                          type: number
+                        label:
+                          type: string
+                        createdAt:
+                          type: number
+                        lastActive:
+                          type: number
+                        max:
+                          type: number
+                        timeWindow:
+                          type: number
+                      additionalProperties: false
+                additionalProperties: false
+        "401":
+          description: Unauthorized - expired API key
+          content:
+            application/json:
+              schema:
+                description: Unauthorized - expired API key
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Authentication error type
+                  message:
+                    type: string
+                    description: Authentication error details
+                  status:
+                    type: number
+                    description: HTTP status code
+                additionalProperties: false
+        "403":
+          description: Forbidden - missing or invalid API key
+          content:
+            application/json:
+              schema:
+                description: Forbidden - missing or invalid API key
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Authorization error type
+                  message:
+                    type: string
+                    description: Authorization error details
+                  status:
+                    type: number
+                    description: HTTP status code
+                additionalProperties: false
+        "429":
+          description: Too Many Requests - rate limit exceeded
+          content:
+            application/json:
+              schema:
+                description: Too Many Requests - rate limit exceeded
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Rate limit error type
+                  message:
+                    type: string
+                    description: Rate limit error details
+                  status:
+                    type: number
+                    description: HTTP status code
+                additionalProperties: false
+        "500":
+          description: Internal Server Error - indexer service unavailable or unexpected
+            failure
+          content:
+            application/json:
+              schema:
+                description: Internal Server Error - indexer service unavailable or unexpected
+                  failure
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error type
+                  message:
+                    type: string
+                    description: Error details
+                  status:
+                    type: number
+                    description: HTTP status code
+                additionalProperties: false
+    post:
+      summary: Create a new API key
+      tags:
+        - API Keys
+      description: Creates a new API key for the authenticated owner. Returns the
+        plaintext key once; store it securely.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                label:
+                  type: string
+                  description: Optional label for the key
+                ttl:
+                  type: number
+                  description: Time-to-live in ms; 0 = no expiry
+              additionalProperties: false
+      security:
+        - ApiKeyAuth: []
+      responses:
+        "200":
+          description: New API key created
+          content:
+            application/json:
+              schema:
+                description: New API key created
+                type: object
+                properties:
+                  key:
+                    type: string
+                    description: Plaintext API key - store securely, shown only once
+                  hashedKey:
+                    type: string
+                  owner:
+                    type: string
+                  ttl:
+                    type: number
+                  label:
+                    type: string
+                  createdAt:
+                    type: number
+                  lastActive:
+                    type: number
+                additionalProperties: false
+        "400":
+          description: Bad Request - invalid parameters, address format, blockchain, or
+            token
+          content:
+            application/json:
+              schema:
+                description: Bad Request - invalid parameters, address format, blockchain, or
+                  token
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error type
+                  message:
+                    type: string
+                    description: Human-readable error description
+                  status:
+                    type: number
+                    description: HTTP status code
+                additionalProperties: false
+        "401":
+          description: Unauthorized - expired API key
+          content:
+            application/json:
+              schema:
+                description: Unauthorized - expired API key
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Authentication error type
+                  message:
+                    type: string
+                    description: Authentication error details
+                  status:
+                    type: number
+                    description: HTTP status code
+                additionalProperties: false
+        "403":
+          description: Forbidden - missing or invalid API key
+          content:
+            application/json:
+              schema:
+                description: Forbidden - missing or invalid API key
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Authorization error type
+                  message:
+                    type: string
+                    description: Authorization error details
+                  status:
+                    type: number
+                    description: HTTP status code
+                additionalProperties: false
+        "429":
+          description: Too Many Requests - rate limit exceeded
+          content:
+            application/json:
+              schema:
+                description: Too Many Requests - rate limit exceeded
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Rate limit error type
+                  message:
+                    type: string
+                    description: Rate limit error details
+                  status:
+                    type: number
+                    description: HTTP status code
+                additionalProperties: false
+        "500":
+          description: Internal Server Error - indexer service unavailable or unexpected
+            failure
+          content:
+            application/json:
+              schema:
+                description: Internal Server Error - indexer service unavailable or unexpected
+                  failure
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error type
+                  message:
+                    type: string
+                    description: Error details
+                  status:
+                    type: number
+                    description: HTTP status code
+                additionalProperties: false
+  /api/v1/keys/{hashedKey}:
+    delete:
+      summary: Revoke an API key
+      tags:
+        - API Keys
+      description: Revokes an API key owned by the authenticated owner. The key cannot
+        be used after revocation.
+      parameters:
+        - schema:
+            type: string
+          in: path
+          name: hashedKey
+          required: true
+          description: Hashed key identifier from GET /api/v1/keys
+      security:
+        - ApiKeyAuth: []
+      responses:
+        "200":
+          description: Key revoked
+          content:
+            application/json:
+              schema:
+                description: Key revoked
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                additionalProperties: false
+        "401":
+          description: Unauthorized - expired API key
+          content:
+            application/json:
+              schema:
+                description: Unauthorized - expired API key
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Authentication error type
+                  message:
+                    type: string
+                    description: Authentication error details
+                  status:
+                    type: number
+                    description: HTTP status code
+                additionalProperties: false
+        "403":
+          description: Forbidden - missing or invalid API key
+          content:
+            application/json:
+              schema:
+                description: Forbidden - missing or invalid API key
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Authorization error type
+                  message:
+                    type: string
+                    description: Authorization error details
+                  status:
+                    type: number
+                    description: HTTP status code
+                additionalProperties: false
+        "404":
+          description: Not Found - API key not found or access denied
+          content:
+            application/json:
+              schema:
+                description: Not Found - API key not found or access denied
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error type
+                  message:
+                    type: string
+                    description: Error details
+                  status:
+                    type: number
+                    description: HTTP status code
+                additionalProperties: false
+        "429":
+          description: Too Many Requests - rate limit exceeded
+          content:
+            application/json:
+              schema:
+                description: Too Many Requests - rate limit exceeded
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Rate limit error type
+                  message:
+                    type: string
+                    description: Rate limit error details
+                  status:
+                    type: number
+                    description: HTTP status code
+                additionalProperties: false
+        "500":
+          description: Internal Server Error - indexer service unavailable or unexpected
+            failure
+          content:
+            application/json:
+              schema:
+                description: Internal Server Error - indexer service unavailable or unexpected
+                  failure
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error type
+                  message:
+                    type: string
+                    description: Error details
+                  status:
+                    type: number
+                    description: HTTP status code
+                additionalProperties: false
+  /api/v1/{blockchain}/{token}/{address}/token-transfers:
+    get:
+      summary: Get token transfers for an address
+      tags:
+        - Token Transfers
+      description: Retrieve the token transfer history for a specific wallet address
+        on a given blockchain. Returns incoming and outgoing transfers sorted by
+        block number.
+      parameters:
+        - schema:
+            type: integer
+            minimum: 1
+            maximum: 1000
+            default: 10
+          in: query
+          name: limit
+          required: false
+          description: Maximum number of transfers to return.
+        - schema:
+            type: integer
+            minimum: 0
+            default: 0
+          in: query
+          name: fromTs
+          required: false
+          description: Start timestamp in milliseconds (inclusive). Use 0 to query from
+            the beginning.
+        - schema:
+            type: integer
+            minimum: 0
+          in: query
+          name: toTs
+          required: false
+          description: End timestamp in milliseconds (inclusive). Omit to query up to the
+            latest available data.
+        - schema:
+            type: string
+            enum:
+              - ethereum
+              - arbitrum
+              - avalanche
+              - polygon
+              - sepolia
+              - tron
+              - ton
+              - bitcoin
+              - spark
+          in: path
+          name: blockchain
+          required: true
+          description: Blockchain network identifier. Use GET /api/v1/chains to see all
+            available options.
+        - schema:
+            type: string
+            enum:
+              - usdt
+              - xaut
+              - usat
+              - btc
+          in: path
+          name: token
+          required: true
+          description: Token identifier. Must be a valid token for the specified blockchain.
+        - schema:
+            type: string
+            minLength: 1
+          in: path
+          name: address
+          required: true
+          description: Wallet address to query. Format varies by blockchain (e.g. 0x...
+            for EVM, bc1... for Bitcoin, T... for Tron).
+      security:
+        - ApiKeyAuth: []
+      responses:
+        "200":
+          description: Token transfer history for the queried address
+          content:
+            application/json:
+              schema:
+                description: Token transfer history for the queried address
+                type: object
+                properties:
+                  transfers:
+                    type: array
+                    description: List of token transfers sorted by block number.
+                    items:
+                      type: object
+                      properties:
+                        blockchain:
+                          type: string
+                          description: Blockchain where the transfer occurred.
+                        blockNumber:
+                          type: integer
+                          description: Block number containing the transfer.
+                        transactionHash:
+                          type: string
+                          description: Hash of the transaction.
+                        transferIndex:
+                          type: integer
+                          description: Index of the transfer within the transaction.
+                        token:
+                          type: string
+                          description: Token identifier.
+                        amount:
+                          type: string
+                          description: Transfer amount as a decimal string.
+                        timestamp:
+                          type: integer
+                          description: Block timestamp in milliseconds since Unix epoch.
+                        transactionIndex:
+                          oneOf:
+                            - type: integer
+                            - type: "null"
+                          description: Position of the transaction within the block.
+                        logIndex:
+                          oneOf:
+                            - type: integer
+                            - type: "null"
+                          description: Event log index for EVM chains. null for non-EVM chains like
+                            Bitcoin.
+                        from:
+                          oneOf:
+                            - type: string
+                            - type: "null"
+                          description: Sender wallet address.
+                        to:
+                          oneOf:
+                            - type: string
+                            - type: "null"
+                          description: The recipient's address
+                        label:
+                          type: string
+                          description: A label associated with the transfer, if any
+                      additionalProperties: true
+                additionalProperties: false
+        "400":
+          description: Bad Request - invalid parameters, address format, blockchain, or
+            token
+          content:
+            application/json:
+              schema:
+                description: Bad Request - invalid parameters, address format, blockchain, or
+                  token
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error type
+                  message:
+                    type: string
+                    description: Human-readable error description
+                  status:
+                    type: number
+                    description: HTTP status code
+                additionalProperties: false
+        "401":
+          description: Unauthorized - expired API key
+          content:
+            application/json:
+              schema:
+                description: Unauthorized - expired API key
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Authentication error type
+                  message:
+                    type: string
+                    description: Authentication error details
+                  status:
+                    type: number
+                    description: HTTP status code
+                additionalProperties: false
+        "403":
+          description: Forbidden - missing or invalid API key
+          content:
+            application/json:
+              schema:
+                description: Forbidden - missing or invalid API key
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Authorization error type
+                  message:
+                    type: string
+                    description: Authorization error details
+                  status:
+                    type: number
+                    description: HTTP status code
+                additionalProperties: false
+        "429":
+          description: Too Many Requests - rate limit exceeded
+          content:
+            application/json:
+              schema:
+                description: Too Many Requests - rate limit exceeded
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Rate limit error type
+                  message:
+                    type: string
+                    description: Rate limit error details
+                  status:
+                    type: number
+                    description: HTTP status code
+                additionalProperties: false
+        "500":
+          description: Internal Server Error - indexer service unavailable or unexpected
+            failure
+          content:
+            application/json:
+              schema:
+                description: Internal Server Error - indexer service unavailable or unexpected
+                  failure
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error type
+                  message:
+                    type: string
+                    description: Error details
+                  status:
+                    type: number
+                    description: HTTP status code
+                additionalProperties: false
+  /api/v1/{blockchain}/{token}/{address}/token-balances:
+    get:
+      summary: Get token balance for an address
+      tags:
+        - Token Balances
+      description: Retrieve the current token balance for a specific wallet address on
+        a given blockchain. Returns a single balance amount representing how
+        much of the specified token the address currently holds.
+      parameters:
+        - schema:
+            type: string
+            enum:
+              - ethereum
+              - arbitrum
+              - avalanche
+              - polygon
+              - sepolia
+              - tron
+              - ton
+              - bitcoin
+              - spark
+          in: path
+          name: blockchain
+          required: true
+          description: Blockchain network identifier. Use GET /api/v1/chains to see all
+            available options.
+        - schema:
+            type: string
+            enum:
+              - usdt
+              - xaut
+              - usat
+              - btc
+          in: path
+          name: token
+          required: true
+          description: Token identifier. Must be a valid token for the specified blockchain.
+        - schema:
+            type: string
+            minLength: 1
+          in: path
+          name: address
+          required: true
+          description: Wallet address to query. Format varies by blockchain (e.g. 0x...
+            for EVM, bc1... for Bitcoin, T... for Tron).
+      security:
+        - ApiKeyAuth: []
+      responses:
+        "200":
+          description: Current token balance for the queried address
+          content:
+            application/json:
+              schema:
+                description: Current token balance for the queried address
+                type: object
+                properties:
+                  tokenBalance:
+                    type: object
+                    description: Balance information.
+                    properties:
+                      blockchain:
+                        type: string
+                        description: Blockchain queried.
+                      token:
+                        type: string
+                        description: Token queried.
+                      amount:
+                        type: string
+                        description: Current balance as a decimal string.
+                    additionalProperties: false
+                additionalProperties: false
+        "400":
+          description: Bad Request - invalid parameters, address format, blockchain, or
+            token
+          content:
+            application/json:
+              schema:
+                description: Bad Request - invalid parameters, address format, blockchain, or
+                  token
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error type
+                  message:
+                    type: string
+                    description: Human-readable error description
+                  status:
+                    type: number
+                    description: HTTP status code
+                additionalProperties: false
+        "401":
+          description: Unauthorized - expired API key
+          content:
+            application/json:
+              schema:
+                description: Unauthorized - expired API key
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Authentication error type
+                  message:
+                    type: string
+                    description: Authentication error details
+                  status:
+                    type: number
+                    description: HTTP status code
+                additionalProperties: false
+        "403":
+          description: Forbidden - missing or invalid API key
+          content:
+            application/json:
+              schema:
+                description: Forbidden - missing or invalid API key
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Authorization error type
+                  message:
+                    type: string
+                    description: Authorization error details
+                  status:
+                    type: number
+                    description: HTTP status code
+                additionalProperties: false
+        "429":
+          description: Too Many Requests - rate limit exceeded
+          content:
+            application/json:
+              schema:
+                description: Too Many Requests - rate limit exceeded
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Rate limit error type
+                  message:
+                    type: string
+                    description: Rate limit error details
+                  status:
+                    type: number
+                    description: HTTP status code
+                additionalProperties: false
+        "500":
+          description: Internal Server Error - indexer service unavailable or unexpected
+            failure
+          content:
+            application/json:
+              schema:
+                description: Internal Server Error - indexer service unavailable or unexpected
+                  failure
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error type
+                  message:
+                    type: string
+                    description: Error details
+                  status:
+                    type: number
+                    description: HTTP status code
+                additionalProperties: false
+  /api/v1/batch/token-transfers:
+    post:
+      summary: Get token transfers for multiple addresses
+      tags:
+        - Token Transfers
+      description: Retrieve token transfer history for multiple addresses in a single
+        request. Each item in the batch is processed independently - if one item
+        fails (e.g. invalid address), the others still return results. The
+        response array maintains the same order as the request. Maximum 10 items
+        per batch.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              description: Array of transfer query objects. Maximum 10 items.
+              minItems: 1
+              maxItems: 10
+              items:
+                type: object
+                properties:
+                  blockchain:
+                    type: string
+                    enum:
+                      - ethereum
+                      - arbitrum
+                      - avalanche
+                      - polygon
+                      - sepolia
+                      - tron
+                      - ton
+                      - bitcoin
+                      - spark
+                    description: Blockchain network identifier.
+                  token:
+                    type: string
+                    enum:
+                      - usdt
+                      - xaut
+                      - usat
+                      - btc
+                    description: Token identifier.
+                  address:
+                    type: string
+                    minLength: 1
+                    description: Wallet address to query.
+                  limit:
+                    type: integer
+                    minimum: 1
+                    maximum: 1000
+                    default: 10
+                    description: Maximum number of transfers to return for this address.
+                  fromTs:
+                    type: integer
+                    minimum: 0
+                    default: 0
+                    description: Start timestamp in milliseconds (inclusive).
+                  toTs:
+                    type: integer
+                    minimum: 0
+                    description: End timestamp in milliseconds (inclusive).
+                required:
+                  - blockchain
+                  - token
+                  - address
+                additionalProperties: false
+        description: Array of transfer query objects. Maximum 10 items.
+      security:
+        - ApiKeyAuth: []
+      responses:
+        "200":
+          description: Array of results in the same order as the request. Each element is
+            either a transfer result or an error object.
+          content:
+            application/json:
+              schema:
+                description: Array of results in the same order as the request. Each element is
+                  either a transfer result or an error object.
+                type: array
+                items:
+                  oneOf:
+                    - description: Token transfer history for the queried address
+                      type: object
+                      properties:
+                        transfers:
+                          type: array
+                          description: List of token transfers sorted by block number.
+                          items:
+                            type: object
+                            properties:
+                              blockchain:
+                                type: string
+                                description: Blockchain where the transfer occurred.
+                              blockNumber:
+                                type: integer
+                                description: Block number containing the transfer.
+                              transactionHash:
+                                type: string
+                                description: Hash of the transaction.
+                              transferIndex:
+                                type: integer
+                                description: Index of the transfer within the transaction.
+                              token:
+                                type: string
+                                description: Token identifier.
+                              amount:
+                                type: string
+                                description: Transfer amount as a decimal string.
+                              timestamp:
+                                type: integer
+                                description: Block timestamp in milliseconds since Unix epoch.
+                              transactionIndex:
+                                oneOf:
+                                  - type: integer
+                                  - type: "null"
+                                description: Position of the transaction within the block.
+                              logIndex:
+                                oneOf:
+                                  - type: integer
+                                  - type: "null"
+                                description: Event log index for EVM chains. null for non-EVM chains like
+                                  Bitcoin.
+                              from:
+                                oneOf:
+                                  - type: string
+                                  - type: "null"
+                                description: Sender wallet address.
+                              to:
+                                oneOf:
+                                  - type: string
+                                  - type: "null"
+                                description: The recipient's address
+                              label:
+                                type: string
+                                description: A label associated with the transfer, if any
+                            additionalProperties: true
+                      additionalProperties: false
+                    - type: object
+                      properties:
+                        error:
+                          type: string
+                        message:
+                          type: string
+                        status:
+                          type: number
+                      additionalProperties: false
+                minItems: 1
+        "400":
+          description: Bad Request - invalid parameters, address format, blockchain, or
+            token
+          content:
+            application/json:
+              schema:
+                description: Bad Request - invalid parameters, address format, blockchain, or
+                  token
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error type
+                  message:
+                    type: string
+                    description: Human-readable error description
+                  status:
+                    type: number
+                    description: HTTP status code
+                additionalProperties: false
+        "401":
+          description: Unauthorized - expired API key
+          content:
+            application/json:
+              schema:
+                description: Unauthorized - expired API key
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Authentication error type
+                  message:
+                    type: string
+                    description: Authentication error details
+                  status:
+                    type: number
+                    description: HTTP status code
+                additionalProperties: false
+        "403":
+          description: Forbidden - missing or invalid API key
+          content:
+            application/json:
+              schema:
+                description: Forbidden - missing or invalid API key
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Authorization error type
+                  message:
+                    type: string
+                    description: Authorization error details
+                  status:
+                    type: number
+                    description: HTTP status code
+                additionalProperties: false
+        "429":
+          description: Too Many Requests - rate limit exceeded
+          content:
+            application/json:
+              schema:
+                description: Too Many Requests - rate limit exceeded
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Rate limit error type
+                  message:
+                    type: string
+                    description: Rate limit error details
+                  status:
+                    type: number
+                    description: HTTP status code
+                additionalProperties: false
+        "500":
+          description: Internal Server Error - indexer service unavailable or unexpected
+            failure
+          content:
+            application/json:
+              schema:
+                description: Internal Server Error - indexer service unavailable or unexpected
+                  failure
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error type
+                  message:
+                    type: string
+                    description: Error details
+                  status:
+                    type: number
+                    description: HTTP status code
+                additionalProperties: false
+  /api/v1/batch/token-balances:
+    post:
+      summary: Get token balances for multiple addresses
+      tags:
+        - Token Balances
+      description: Retrieve the current token balance for multiple addresses in a
+        single request. Each item in the batch is processed independently - if
+        one item fails (e.g. invalid address), the others still return results.
+        The response array maintains the same order as the request. Maximum 10
+        items per batch.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              description: Array of balance query objects. Maximum 10 items.
+              minItems: 1
+              maxItems: 10
+              items:
+                type: object
+                properties:
+                  blockchain:
+                    type: string
+                    enum:
+                      - ethereum
+                      - arbitrum
+                      - avalanche
+                      - polygon
+                      - sepolia
+                      - tron
+                      - ton
+                      - bitcoin
+                      - spark
+                    description: Blockchain network identifier.
+                  token:
+                    type: string
+                    enum:
+                      - usdt
+                      - xaut
+                      - usat
+                      - btc
+                    description: Token identifier.
+                  address:
+                    type: string
+                    minLength: 1
+                    description: Wallet address to query.
+                required:
+                  - blockchain
+                  - token
+                  - address
+                additionalProperties: false
+        description: Array of balance query objects. Maximum 10 items.
+      security:
+        - ApiKeyAuth: []
+      responses:
+        "200":
+          description: Array of results in the same order as the request. Each element is
+            either a balance result or an error object.
+          content:
+            application/json:
+              schema:
+                description: Array of results in the same order as the request. Each element is
+                  either a balance result or an error object.
+                type: array
+                items:
+                  oneOf:
+                    - description: Current token balance for the queried address
+                      type: object
+                      properties:
+                        tokenBalance:
+                          type: object
+                          description: Balance information.
+                          properties:
+                            blockchain:
+                              type: string
+                              description: Blockchain queried.
+                            token:
+                              type: string
+                              description: Token queried.
+                            amount:
+                              type: string
+                              description: Current balance as a decimal string.
+                          additionalProperties: false
+                      additionalProperties: false
+                    - type: object
+                      properties:
+                        error:
+                          type: string
+                        message:
+                          type: string
+                        status:
+                          type: number
+                      additionalProperties: false
+        "400":
+          description: Bad Request - invalid parameters, address format, blockchain, or
+            token
+          content:
+            application/json:
+              schema:
+                description: Bad Request - invalid parameters, address format, blockchain, or
+                  token
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error type
+                  message:
+                    type: string
+                    description: Human-readable error description
+                  status:
+                    type: number
+                    description: HTTP status code
+                additionalProperties: false
+        "401":
+          description: Unauthorized - expired API key
+          content:
+            application/json:
+              schema:
+                description: Unauthorized - expired API key
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Authentication error type
+                  message:
+                    type: string
+                    description: Authentication error details
+                  status:
+                    type: number
+                    description: HTTP status code
+                additionalProperties: false
+        "403":
+          description: Forbidden - missing or invalid API key
+          content:
+            application/json:
+              schema:
+                description: Forbidden - missing or invalid API key
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Authorization error type
+                  message:
+                    type: string
+                    description: Authorization error details
+                  status:
+                    type: number
+                    description: HTTP status code
+                additionalProperties: false
+        "429":
+          description: Too Many Requests - rate limit exceeded
+          content:
+            application/json:
+              schema:
+                description: Too Many Requests - rate limit exceeded
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Rate limit error type
+                  message:
+                    type: string
+                    description: Rate limit error details
+                  status:
+                    type: number
+                    description: HTTP status code
+                additionalProperties: false
+        "500":
+          description: Internal Server Error - indexer service unavailable or unexpected
+            failure
+          content:
+            application/json:
+              schema:
+                description: Internal Server Error - indexer service unavailable or unexpected
+                  failure
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error type
+                  message:
+                    type: string
+                    description: Error details
+                  status:
+                    type: number
+                    description: HTTP status code
+                additionalProperties: false
+tags:
+  - name: Health
+    description: Server health and status checks
+  - name: Chains
+    description: Supported blockchains and token discovery
+  - name: Token Transfers
+    description: Query token transfer history for addresses
+  - name: Token Balances
+    description: Query current token balances for addresses

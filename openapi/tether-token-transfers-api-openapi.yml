@@ -1,0 +1,476 @@
+openapi: 3.2.0
+info:
+  title: WDK Indexer Token Transfers API
+  description: API for querying blockchain token transfers and balances across multiple networks. Authenticated
+    endpoints require an API key passed via the X-API-KEY header.
+  version: 1.0.0
+tags:
+- name: Token Transfers
+  description: Query token transfer history for addresses
+paths:
+  /api/v1/{blockchain}/{token}/{address}/token-transfers:
+    get:
+      summary: Get token transfers for an address
+      tags:
+      - Token Transfers
+      description: Retrieve the token transfer history for a specific wallet address on a given blockchain.
+        Returns incoming and outgoing transfers sorted by block number.
+      parameters:
+      - schema:
+          type: integer
+          minimum: 1
+          maximum: 1000
+          default: 10
+        in: query
+        name: limit
+        required: false
+        description: Maximum number of transfers to return.
+      - schema:
+          type: integer
+          minimum: 0
+          default: 0
+        in: query
+        name: fromTs
+        required: false
+        description: Start timestamp in milliseconds (inclusive). Use 0 to query from the beginning.
+      - schema:
+          type: integer
+          minimum: 0
+        in: query
+        name: toTs
+        required: false
+        description: End timestamp in milliseconds (inclusive). Omit to query up to the latest available
+          data.
+      - schema:
+          type: string
+          enum:
+          - ethereum
+          - arbitrum
+          - avalanche
+          - polygon
+          - sepolia
+          - tron
+          - ton
+          - bitcoin
+          - spark
+        in: path
+        name: blockchain
+        required: true
+        description: Blockchain network identifier. Use GET /api/v1/chains to see all available options.
+      - schema:
+          type: string
+          enum:
+          - usdt
+          - xaut
+          - usat
+          - btc
+        in: path
+        name: token
+        required: true
+        description: Token identifier. Must be a valid token for the specified blockchain.
+      - schema:
+          type: string
+          minLength: 1
+        in: path
+        name: address
+        required: true
+        description: Wallet address to query. Format varies by blockchain (e.g. 0x... for EVM, bc1...
+          for Bitcoin, T... for Tron).
+      security:
+      - ApiKeyAuth: []
+      responses:
+        '200':
+          description: Token transfer history for the queried address
+          content:
+            application/json:
+              schema:
+                description: Token transfer history for the queried address
+                type: object
+                properties:
+                  transfers:
+                    type: array
+                    description: List of token transfers sorted by block number.
+                    items:
+                      type: object
+                      properties:
+                        blockchain:
+                          type: string
+                          description: Blockchain where the transfer occurred.
+                        blockNumber:
+                          type: integer
+                          description: Block number containing the transfer.
+                        transactionHash:
+                          type: string
+                          description: Hash of the transaction.
+                        transferIndex:
+                          type: integer
+                          description: Index of the transfer within the transaction.
+                        token:
+                          type: string
+                          description: Token identifier.
+                        amount:
+                          type: string
+                          description: Transfer amount as a decimal string.
+                        timestamp:
+                          type: integer
+                          description: Block timestamp in milliseconds since Unix epoch.
+                        transactionIndex:
+                          oneOf:
+                          - type: integer
+                          - type: 'null'
+                          description: Position of the transaction within the block.
+                        logIndex:
+                          oneOf:
+                          - type: integer
+                          - type: 'null'
+                          description: Event log index for EVM chains. null for non-EVM chains like Bitcoin.
+                        from:
+                          oneOf:
+                          - type: string
+                          - type: 'null'
+                          description: Sender wallet address.
+                        to:
+                          oneOf:
+                          - type: string
+                          - type: 'null'
+                          description: The recipient's address
+                        label:
+                          type: string
+                          description: A label associated with the transfer, if any
+                      additionalProperties: true
+                additionalProperties: false
+        '400':
+          description: Bad Request - invalid parameters, address format, blockchain, or token
+          content:
+            application/json:
+              schema:
+                description: Bad Request - invalid parameters, address format, blockchain, or token
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error type
+                  message:
+                    type: string
+                    description: Human-readable error description
+                  status:
+                    type: number
+                    description: HTTP status code
+                additionalProperties: false
+        '401':
+          description: Unauthorized - expired API key
+          content:
+            application/json:
+              schema:
+                description: Unauthorized - expired API key
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Authentication error type
+                  message:
+                    type: string
+                    description: Authentication error details
+                  status:
+                    type: number
+                    description: HTTP status code
+                additionalProperties: false
+        '403':
+          description: Forbidden - missing or invalid API key
+          content:
+            application/json:
+              schema:
+                description: Forbidden - missing or invalid API key
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Authorization error type
+                  message:
+                    type: string
+                    description: Authorization error details
+                  status:
+                    type: number
+                    description: HTTP status code
+                additionalProperties: false
+        '429':
+          description: Too Many Requests - rate limit exceeded
+          content:
+            application/json:
+              schema:
+                description: Too Many Requests - rate limit exceeded
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Rate limit error type
+                  message:
+                    type: string
+                    description: Rate limit error details
+                  status:
+                    type: number
+                    description: HTTP status code
+                additionalProperties: false
+        '500':
+          description: Internal Server Error - indexer service unavailable or unexpected failure
+          content:
+            application/json:
+              schema:
+                description: Internal Server Error - indexer service unavailable or unexpected failure
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error type
+                  message:
+                    type: string
+                    description: Error details
+                  status:
+                    type: number
+                    description: HTTP status code
+                additionalProperties: false
+  /api/v1/batch/token-transfers:
+    post:
+      summary: Get token transfers for multiple addresses
+      tags:
+      - Token Transfers
+      description: Retrieve token transfer history for multiple addresses in a single request. Each item
+        in the batch is processed independently - if one item fails (e.g. invalid address), the others
+        still return results. The response array maintains the same order as the request. Maximum 10 items
+        per batch.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              description: Array of transfer query objects. Maximum 10 items.
+              minItems: 1
+              maxItems: 10
+              items:
+                type: object
+                properties:
+                  blockchain:
+                    type: string
+                    enum:
+                    - ethereum
+                    - arbitrum
+                    - avalanche
+                    - polygon
+                    - sepolia
+                    - tron
+                    - ton
+                    - bitcoin
+                    - spark
+                    description: Blockchain network identifier.
+                  token:
+                    type: string
+                    enum:
+                    - usdt
+                    - xaut
+                    - usat
+                    - btc
+                    description: Token identifier.
+                  address:
+                    type: string
+                    minLength: 1
+                    description: Wallet address to query.
+                  limit:
+                    type: integer
+                    minimum: 1
+                    maximum: 1000
+                    default: 10
+                    description: Maximum number of transfers to return for this address.
+                  fromTs:
+                    type: integer
+                    minimum: 0
+                    default: 0
+                    description: Start timestamp in milliseconds (inclusive).
+                  toTs:
+                    type: integer
+                    minimum: 0
+                    description: End timestamp in milliseconds (inclusive).
+                required:
+                - blockchain
+                - token
+                - address
+                additionalProperties: false
+        description: Array of transfer query objects. Maximum 10 items.
+      security:
+      - ApiKeyAuth: []
+      responses:
+        '200':
+          description: Array of results in the same order as the request. Each element is either a transfer
+            result or an error object.
+          content:
+            application/json:
+              schema:
+                description: Array of results in the same order as the request. Each element is either
+                  a transfer result or an error object.
+                type: array
+                items:
+                  oneOf:
+                  - description: Token transfer history for the queried address
+                    type: object
+                    properties:
+                      transfers:
+                        type: array
+                        description: List of token transfers sorted by block number.
+                        items:
+                          type: object
+                          properties:
+                            blockchain:
+                              type: string
+                              description: Blockchain where the transfer occurred.
+                            blockNumber:
+                              type: integer
+                              description: Block number containing the transfer.
+                            transactionHash:
+                              type: string
+                              description: Hash of the transaction.
+                            transferIndex:
+                              type: integer
+                              description: Index of the transfer within the transaction.
+                            token:
+                              type: string
+                              description: Token identifier.
+                            amount:
+                              type: string
+                              description: Transfer amount as a decimal string.
+                            timestamp:
+                              type: integer
+                              description: Block timestamp in milliseconds since Unix epoch.
+                            transactionIndex:
+                              oneOf:
+                              - type: integer
+                              - type: 'null'
+                              description: Position of the transaction within the block.
+                            logIndex:
+                              oneOf:
+                              - type: integer
+                              - type: 'null'
+                              description: Event log index for EVM chains. null for non-EVM chains like
+                                Bitcoin.
+                            from:
+                              oneOf:
+                              - type: string
+                              - type: 'null'
+                              description: Sender wallet address.
+                            to:
+                              oneOf:
+                              - type: string
+                              - type: 'null'
+                              description: The recipient's address
+                            label:
+                              type: string
+                              description: A label associated with the transfer, if any
+                          additionalProperties: true
+                    additionalProperties: false
+                  - type: object
+                    properties:
+                      error:
+                        type: string
+                      message:
+                        type: string
+                      status:
+                        type: number
+                    additionalProperties: false
+                minItems: 1
+        '400':
+          description: Bad Request - invalid parameters, address format, blockchain, or token
+          content:
+            application/json:
+              schema:
+                description: Bad Request - invalid parameters, address format, blockchain, or token
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error type
+                  message:
+                    type: string
+                    description: Human-readable error description
+                  status:
+                    type: number
+                    description: HTTP status code
+                additionalProperties: false
+        '401':
+          description: Unauthorized - expired API key
+          content:
+            application/json:
+              schema:
+                description: Unauthorized - expired API key
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Authentication error type
+                  message:
+                    type: string
+                    description: Authentication error details
+                  status:
+                    type: number
+                    description: HTTP status code
+                additionalProperties: false
+        '403':
+          description: Forbidden - missing or invalid API key
+          content:
+            application/json:
+              schema:
+                description: Forbidden - missing or invalid API key
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Authorization error type
+                  message:
+                    type: string
+                    description: Authorization error details
+                  status:
+                    type: number
+                    description: HTTP status code
+                additionalProperties: false
+        '429':
+          description: Too Many Requests - rate limit exceeded
+          content:
+            application/json:
+              schema:
+                description: Too Many Requests - rate limit exceeded
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Rate limit error type
+                  message:
+                    type: string
+                    description: Rate limit error details
+                  status:
+                    type: number
+                    description: HTTP status code
+                additionalProperties: false
+        '500':
+          description: Internal Server Error - indexer service unavailable or unexpected failure
+          content:
+            application/json:
+              schema:
+                description: Internal Server Error - indexer service unavailable or unexpected failure
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error type
+                  message:
+                    type: string
+                    description: Error details
+                  status:
+                    type: number
+                    description: HTTP status code
+                additionalProperties: false
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-KEY
+      description: API key obtained via the registration form. Include in the X-API-KEY header for all
+        authenticated requests.

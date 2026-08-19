@@ -1,0 +1,143 @@
+{
+  "item": [
+    {
+      "id": "9c423aa6-75d1-4efe-bf69-503d3a17d788",
+      "name": "Health",
+      "description": {
+        "content": "Server health and status checks",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "456608ed-a9cc-4bc0-ae9f-3399f068f7a1",
+          "name": "Deep health check endpoint",
+          "request": {
+            "name": "Deep health check endpoint",
+            "description": {
+              "content": "Checks Redis connectivity and blockchain indexer sync status. Returns HTTP 200 only when the overall status is `healthy`. Returns HTTP 503 for any non-healthy overall status (`degraded` or `unhealthy`), so readiness probes and load balancers can rely on the HTTP status code alone.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "health"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "a98d2804-583b-4b83-8352-75efbaab6165",
+              "name": "Default Response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "health"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": \"healthy\",\n  \"timestamp\": \"1986-04-12T15:39:49.316Z\",\n  \"summary\": {\n    \"healthy\": 10,\n    \"unhealthy\": 2,\n    \"total\": 12\n  },\n  \"checks\": {\n    \"redis\": {\n      \"status\": \"healthy\"\n    },\n    \"indexers\": {\n      \"key_0\": {\n        \"status\": \"healthy\",\n        \"rpcLatencyMs\": 45,\n        \"lag\": 3,\n        \"db\": {\n          \"status\": \"healthy\"\n        }\n      },\n      \"key_1\": {\n        \"status\": \"healthy\",\n        \"rpcLatencyMs\": 45,\n        \"lag\": 3,\n        \"db\": {\n          \"status\": \"healthy\"\n        }\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "4b6a3437-5102-4fa8-879f-33dff59364dc",
+              "name": "Default Response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "health"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Service Unavailable",
+              "code": 503,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": \"healthy\",\n  \"timestamp\": \"1986-04-12T15:39:49.316Z\",\n  \"summary\": {\n    \"healthy\": 10,\n    \"unhealthy\": 2,\n    \"total\": 12\n  },\n  \"checks\": {\n    \"redis\": {\n      \"status\": \"healthy\"\n    },\n    \"indexers\": {\n      \"key_0\": {\n        \"status\": \"healthy\",\n        \"rpcLatencyMs\": 45,\n        \"lag\": 3,\n        \"db\": {\n          \"status\": \"healthy\"\n        }\n      },\n      \"key_1\": {\n        \"status\": \"healthy\",\n        \"rpcLatencyMs\": 45,\n        \"lag\": 3,\n        \"db\": {\n          \"status\": \"healthy\"\n        }\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "/",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "132efa85-f22c-4b55-8d4b-9a05098de60e",
+    "name": "WDK Indexer Health API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "API for querying blockchain token transfers and balances across multiple networks. Authenticated endpoints require an API key passed via the X-API-KEY header.",
+      "type": "text/plain"
+    }
+  }
+}

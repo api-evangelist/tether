@@ -1,0 +1,1018 @@
+{
+  "item": [
+    {
+      "id": "7f77eef6-9a91-4451-952e-2d7cc8e8007a",
+      "name": "Token Transfers",
+      "description": {
+        "content": "Query token transfer history for addresses",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "7411ae2c-98b6-46be-8c66-ec41726876eb",
+          "name": "Get token transfers for an address",
+          "request": {
+            "name": "Get token transfers for an address",
+            "description": {
+              "content": "Retrieve the token transfer history for a specific wallet address on a given blockchain. Returns incoming and outgoing transfers sorted by block number.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                ":blockchain",
+                ":token",
+                ":address",
+                "token-transfers"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "10",
+                  "description": "Maximum number of transfers to return."
+                },
+                {
+                  "disabled": false,
+                  "key": "fromTs",
+                  "value": "0",
+                  "description": "Start timestamp in milliseconds (inclusive). Use 0 to query from the beginning."
+                },
+                {
+                  "disabled": false,
+                  "key": "toTs",
+                  "value": "<integer>",
+                  "description": "End timestamp in milliseconds (inclusive). Omit to query up to the latest available data."
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "blockchain",
+                  "description": "(Required) Blockchain network identifier. Use GET /api/v1/chains to see all available options."
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "token",
+                  "description": "(Required) Token identifier. Must be a valid token for the specified blockchain."
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "address",
+                  "description": "(Required) Wallet address to query. Format varies by blockchain (e.g. 0x... for EVM, bc1... for Bitcoin, T... for Tron)."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "key",
+                  "value": "X-API-KEY"
+                },
+                {
+                  "key": "value",
+                  "value": "{{apiKey}}"
+                },
+                {
+                  "key": "in",
+                  "value": "header"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "dd6e0345-ba51-43ff-bf52-90935c111d97",
+              "name": "Token transfer history for the queried address",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    ":blockchain",
+                    ":token",
+                    ":address",
+                    "token-transfers"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "10"
+                    },
+                    {
+                      "key": "fromTs",
+                      "value": "0"
+                    },
+                    {
+                      "key": "toTs",
+                      "value": "<integer>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "blockchain",
+                      "description": "(Required) Blockchain network identifier. Use GET /api/v1/chains to see all available options."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "token",
+                      "description": "(Required) Token identifier. Must be a valid token for the specified blockchain."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "address",
+                      "description": "(Required) Wallet address to query. Format varies by blockchain (e.g. 0x... for EVM, bc1... for Bitcoin, T... for Tron)."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"transfers\": [\n    {\n      \"blockchain\": \"string\",\n      \"blockNumber\": 6803,\n      \"transactionHash\": \"string\",\n      \"transferIndex\": 5101,\n      \"token\": \"string\",\n      \"amount\": \"string\",\n      \"timestamp\": 1754,\n      \"transactionIndex\": 5539,\n      \"logIndex\": 3204,\n      \"from\": \"string\",\n      \"to\": \"string\",\n      \"label\": \"string\"\n    },\n    {\n      \"blockchain\": \"string\",\n      \"blockNumber\": 6035,\n      \"transactionHash\": \"string\",\n      \"transferIndex\": 1782,\n      \"token\": \"string\",\n      \"amount\": \"string\",\n      \"timestamp\": 1055,\n      \"transactionIndex\": 7930,\n      \"logIndex\": 1241,\n      \"from\": \"string\",\n      \"to\": \"string\",\n      \"label\": \"string\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "28388274-5a6b-4ce3-80d9-a4a3d54c7101",
+              "name": "Bad Request - invalid parameters, address format, blockchain, or token",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    ":blockchain",
+                    ":token",
+                    ":address",
+                    "token-transfers"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "10"
+                    },
+                    {
+                      "key": "fromTs",
+                      "value": "0"
+                    },
+                    {
+                      "key": "toTs",
+                      "value": "<integer>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "blockchain",
+                      "description": "(Required) Blockchain network identifier. Use GET /api/v1/chains to see all available options."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "token",
+                      "description": "(Required) Token identifier. Must be a valid token for the specified blockchain."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "address",
+                      "description": "(Required) Wallet address to query. Format varies by blockchain (e.g. 0x... for EVM, bc1... for Bitcoin, T... for Tron)."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"message\": \"string\",\n  \"status\": 5459.215786888588\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "d64658f6-d666-42fa-ba5f-5576ff51d56d",
+              "name": "Unauthorized - expired API key",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    ":blockchain",
+                    ":token",
+                    ":address",
+                    "token-transfers"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "10"
+                    },
+                    {
+                      "key": "fromTs",
+                      "value": "0"
+                    },
+                    {
+                      "key": "toTs",
+                      "value": "<integer>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "blockchain",
+                      "description": "(Required) Blockchain network identifier. Use GET /api/v1/chains to see all available options."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "token",
+                      "description": "(Required) Token identifier. Must be a valid token for the specified blockchain."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "address",
+                      "description": "(Required) Wallet address to query. Format varies by blockchain (e.g. 0x... for EVM, bc1... for Bitcoin, T... for Tron)."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"message\": \"string\",\n  \"status\": 7619.847153491031\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "fc440033-b29b-42fc-b980-dfb537d828f3",
+              "name": "Forbidden - missing or invalid API key",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    ":blockchain",
+                    ":token",
+                    ":address",
+                    "token-transfers"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "10"
+                    },
+                    {
+                      "key": "fromTs",
+                      "value": "0"
+                    },
+                    {
+                      "key": "toTs",
+                      "value": "<integer>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "blockchain",
+                      "description": "(Required) Blockchain network identifier. Use GET /api/v1/chains to see all available options."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "token",
+                      "description": "(Required) Token identifier. Must be a valid token for the specified blockchain."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "address",
+                      "description": "(Required) Wallet address to query. Format varies by blockchain (e.g. 0x... for EVM, bc1... for Bitcoin, T... for Tron)."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"message\": \"string\",\n  \"status\": 9218.88235144228\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "05efd3e7-515f-4a5f-bfdb-7e53add46916",
+              "name": "Too Many Requests - rate limit exceeded",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    ":blockchain",
+                    ":token",
+                    ":address",
+                    "token-transfers"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "10"
+                    },
+                    {
+                      "key": "fromTs",
+                      "value": "0"
+                    },
+                    {
+                      "key": "toTs",
+                      "value": "<integer>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "blockchain",
+                      "description": "(Required) Blockchain network identifier. Use GET /api/v1/chains to see all available options."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "token",
+                      "description": "(Required) Token identifier. Must be a valid token for the specified blockchain."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "address",
+                      "description": "(Required) Wallet address to query. Format varies by blockchain (e.g. 0x... for EVM, bc1... for Bitcoin, T... for Tron)."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"message\": \"string\",\n  \"status\": 8288.615865590527\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "7c4e0895-75be-40eb-9ea8-877f85323398",
+              "name": "Internal Server Error - indexer service unavailable or unexpected failure",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    ":blockchain",
+                    ":token",
+                    ":address",
+                    "token-transfers"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "10"
+                    },
+                    {
+                      "key": "fromTs",
+                      "value": "0"
+                    },
+                    {
+                      "key": "toTs",
+                      "value": "<integer>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "blockchain",
+                      "description": "(Required) Blockchain network identifier. Use GET /api/v1/chains to see all available options."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "token",
+                      "description": "(Required) Token identifier. Must be a valid token for the specified blockchain."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "address",
+                      "description": "(Required) Wallet address to query. Format varies by blockchain (e.g. 0x... for EVM, bc1... for Bitcoin, T... for Tron)."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"message\": \"string\",\n  \"status\": 6905.736296541199\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "f74d079d-021d-4cea-a7e0-0f45fb7b53a6",
+          "name": "Get token transfers for multiple addresses",
+          "request": {
+            "name": "Get token transfers for multiple addresses",
+            "description": {
+              "content": "Retrieve token transfer history for multiple addresses in a single request. Each item in the batch is processed independently - if one item fails (e.g. invalid address), the others still return results. The response array maintains the same order as the request. Maximum 10 items per batch.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "v1",
+                "batch",
+                "token-transfers"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "key",
+                  "value": "X-API-KEY"
+                },
+                {
+                  "key": "value",
+                  "value": "{{apiKey}}"
+                },
+                {
+                  "key": "in",
+                  "value": "header"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "[\n  {\n    \"blockchain\": \"<string>\",\n    \"token\": \"<string>\",\n    \"address\": \"<string>\",\n    \"limit\": 10,\n    \"fromTs\": 0,\n    \"toTs\": \"<integer>\"\n  }\n]",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "88d4c53a-1d31-4854-ab82-d4a1de7afc70",
+              "name": "Array of results in the same order as the request. Each element is either a transfer result or an error object.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "batch",
+                    "token-transfers"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "[\n  {\n    \"blockchain\": \"<string>\",\n    \"token\": \"<string>\",\n    \"address\": \"<string>\",\n    \"limit\": 10,\n    \"fromTs\": 0,\n    \"toTs\": \"<integer>\"\n  }\n]",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "[\n  {\n    \"transfers\": [\n      {\n        \"blockchain\": \"string\",\n        \"blockNumber\": 8281,\n        \"transactionHash\": \"string\",\n        \"transferIndex\": 8080,\n        \"token\": \"string\",\n        \"amount\": \"string\",\n        \"timestamp\": 7512,\n        \"transactionIndex\": 9624,\n        \"logIndex\": 9734,\n        \"from\": \"string\",\n        \"to\": \"string\",\n        \"label\": \"string\"\n      },\n      {\n        \"blockchain\": \"string\",\n        \"blockNumber\": 3549,\n        \"transactionHash\": \"string\",\n        \"transferIndex\": 6146,\n        \"token\": \"string\",\n        \"amount\": \"string\",\n        \"timestamp\": 4885,\n        \"transactionIndex\": 7582,\n        \"logIndex\": 4240,\n        \"from\": \"string\",\n        \"to\": \"string\",\n        \"label\": \"string\",\n        \"key_0\": false\n      }\n    ]\n  }\n]",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "9f44056d-9db1-4c20-993c-68322dd7ea69",
+              "name": "Bad Request - invalid parameters, address format, blockchain, or token",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "batch",
+                    "token-transfers"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "[\n  {\n    \"blockchain\": \"<string>\",\n    \"token\": \"<string>\",\n    \"address\": \"<string>\",\n    \"limit\": 10,\n    \"fromTs\": 0,\n    \"toTs\": \"<integer>\"\n  }\n]",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"message\": \"string\",\n  \"status\": 5459.215786888588\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "c63d5949-7eb2-410a-84c9-160555f7524e",
+              "name": "Unauthorized - expired API key",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "batch",
+                    "token-transfers"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "[\n  {\n    \"blockchain\": \"<string>\",\n    \"token\": \"<string>\",\n    \"address\": \"<string>\",\n    \"limit\": 10,\n    \"fromTs\": 0,\n    \"toTs\": \"<integer>\"\n  }\n]",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"message\": \"string\",\n  \"status\": 7619.847153491031\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "2753c125-2449-487b-a042-8592b75fd27f",
+              "name": "Forbidden - missing or invalid API key",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "batch",
+                    "token-transfers"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "[\n  {\n    \"blockchain\": \"<string>\",\n    \"token\": \"<string>\",\n    \"address\": \"<string>\",\n    \"limit\": 10,\n    \"fromTs\": 0,\n    \"toTs\": \"<integer>\"\n  }\n]",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"message\": \"string\",\n  \"status\": 9218.88235144228\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "0c44b597-dd6e-41d2-838d-13bfd448de1a",
+              "name": "Too Many Requests - rate limit exceeded",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "batch",
+                    "token-transfers"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "[\n  {\n    \"blockchain\": \"<string>\",\n    \"token\": \"<string>\",\n    \"address\": \"<string>\",\n    \"limit\": 10,\n    \"fromTs\": 0,\n    \"toTs\": \"<integer>\"\n  }\n]",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"message\": \"string\",\n  \"status\": 8288.615865590527\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "7698a527-9822-47c5-9069-103312cd30c2",
+              "name": "Internal Server Error - indexer service unavailable or unexpected failure",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "v1",
+                    "batch",
+                    "token-transfers"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-API-KEY",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "[\n  {\n    \"blockchain\": \"<string>\",\n    \"token\": \"<string>\",\n    \"address\": \"<string>\",\n    \"limit\": 10,\n    \"fromTs\": 0,\n    \"toTs\": \"<integer>\"\n  }\n]",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"string\",\n  \"message\": \"string\",\n  \"status\": 6905.736296541199\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "/",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "05c27235-c5b0-4e12-8e06-b45e29310302",
+    "name": "WDK Indexer Token Transfers API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "API for querying blockchain token transfers and balances across multiple networks. Authenticated endpoints require an API key passed via the X-API-KEY header.",
+      "type": "text/plain"
+    }
+  }
+}

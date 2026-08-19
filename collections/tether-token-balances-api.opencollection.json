@@ -1,0 +1,76 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "WDK Indexer Token Balances API",
+    "version": "1.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Token Balances",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get token balance for an address",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v1/:blockchain/:token/:address/token-balances",
+            "params": [
+              {
+                "name": "blockchain",
+                "value": "",
+                "type": "path",
+                "description": "Blockchain network identifier. Use GET /api/v1/chains to see all available options."
+              },
+              {
+                "name": "token",
+                "value": "",
+                "type": "path",
+                "description": "Token identifier. Must be a valid token for the specified blockchain."
+              },
+              {
+                "name": "address",
+                "value": "",
+                "type": "path",
+                "description": "Wallet address to query. Format varies by blockchain (e.g. 0x... for EVM, bc1... for Bitcoin, T... for Tron)."
+              }
+            ],
+            "auth": {
+              "type": "apikey",
+              "key": "X-API-KEY",
+              "value": "{{X-API-KEY}}",
+              "placement": "header"
+            }
+          },
+          "docs": "Retrieve the current token balance for a specific wallet address on a given blockchain. Returns a single balance amount representing how much of the specified token the address currently holds."
+        },
+        {
+          "info": {
+            "name": "Get token balances for multiple addresses",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v1/batch/token-balances",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "apikey",
+              "key": "X-API-KEY",
+              "value": "{{X-API-KEY}}",
+              "placement": "header"
+            }
+          },
+          "docs": "Retrieve the current token balance for multiple addresses in a single request. Each item in the batch is processed independently - if one item fails (e.g. invalid address), the others still return results. The response array maintains the same order as the request. Maximum 10 items per batch."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

@@ -1,0 +1,94 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "WDK Indexer Token Transfers API",
+    "version": "1.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Token Transfers",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get token transfers for an address",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v1/:blockchain/:token/:address/token-transfers",
+            "params": [
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum number of transfers to return."
+              },
+              {
+                "name": "fromTs",
+                "value": "",
+                "type": "query",
+                "description": "Start timestamp in milliseconds (inclusive). Use 0 to query from the beginning."
+              },
+              {
+                "name": "toTs",
+                "value": "",
+                "type": "query",
+                "description": "End timestamp in milliseconds (inclusive). Omit to query up to the latest available data."
+              },
+              {
+                "name": "blockchain",
+                "value": "",
+                "type": "path",
+                "description": "Blockchain network identifier. Use GET /api/v1/chains to see all available options."
+              },
+              {
+                "name": "token",
+                "value": "",
+                "type": "path",
+                "description": "Token identifier. Must be a valid token for the specified blockchain."
+              },
+              {
+                "name": "address",
+                "value": "",
+                "type": "path",
+                "description": "Wallet address to query. Format varies by blockchain (e.g. 0x... for EVM, bc1... for Bitcoin, T... for Tron)."
+              }
+            ],
+            "auth": {
+              "type": "apikey",
+              "key": "X-API-KEY",
+              "value": "{{X-API-KEY}}",
+              "placement": "header"
+            }
+          },
+          "docs": "Retrieve the token transfer history for a specific wallet address on a given blockchain. Returns incoming and outgoing transfers sorted by block number."
+        },
+        {
+          "info": {
+            "name": "Get token transfers for multiple addresses",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v1/batch/token-transfers",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "apikey",
+              "key": "X-API-KEY",
+              "value": "{{X-API-KEY}}",
+              "placement": "header"
+            }
+          },
+          "docs": "Retrieve token transfer history for multiple addresses in a single request. Each item in the batch is processed independently - if one item fails (e.g. invalid address), the others still return results. The response array maintains the same order as the request. Maximum 10 items per batch."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

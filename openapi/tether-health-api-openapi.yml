@@ -1,0 +1,161 @@
+openapi: 3.2.0
+info:
+  title: WDK Indexer Health API
+  description: API for querying blockchain token transfers and balances across multiple networks. Authenticated
+    endpoints require an API key passed via the X-API-KEY header.
+  version: 1.0.0
+tags:
+- name: Health
+  description: Server health and status checks
+paths:
+  /api/v1/health:
+    get:
+      summary: Deep health check endpoint
+      tags:
+      - Health
+      description: Checks Redis connectivity and blockchain indexer sync status. Returns HTTP 200 only
+        when the overall status is `healthy`. Returns HTTP 503 for any non-healthy overall status (`degraded`
+        or `unhealthy`), so readiness probes and load balancers can rely on the HTTP status code alone.
+      responses:
+        '200':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                    - healthy
+                    - degraded
+                    - unhealthy
+                    example: healthy
+                  timestamp:
+                    type: string
+                    format: date-time
+                  summary:
+                    type: object
+                    properties:
+                      healthy:
+                        type: integer
+                        example: 10
+                      unhealthy:
+                        type: integer
+                        example: 2
+                      total:
+                        type: integer
+                        example: 12
+                  checks:
+                    type: object
+                    properties:
+                      redis:
+                        type: object
+                        properties:
+                          status:
+                            type: string
+                            enum:
+                            - healthy
+                            - unhealthy
+                            example: healthy
+                      indexers:
+                        type: object
+                        additionalProperties:
+                          type: object
+                          properties:
+                            status:
+                              type: string
+                              enum:
+                              - healthy
+                              - unhealthy
+                              example: healthy
+                            rpcLatencyMs:
+                              type: number
+                              example: 45
+                            lag:
+                              type: number
+                              example: 3
+                            db:
+                              type: object
+                              properties:
+                                status:
+                                  type: string
+                                  enum:
+                                  - healthy
+                                  - unhealthy
+                                  example: healthy
+        '503':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                    - healthy
+                    - degraded
+                    - unhealthy
+                    example: healthy
+                  timestamp:
+                    type: string
+                    format: date-time
+                  summary:
+                    type: object
+                    properties:
+                      healthy:
+                        type: integer
+                        example: 10
+                      unhealthy:
+                        type: integer
+                        example: 2
+                      total:
+                        type: integer
+                        example: 12
+                  checks:
+                    type: object
+                    properties:
+                      redis:
+                        type: object
+                        properties:
+                          status:
+                            type: string
+                            enum:
+                            - healthy
+                            - unhealthy
+                            example: healthy
+                      indexers:
+                        type: object
+                        additionalProperties:
+                          type: object
+                          properties:
+                            status:
+                              type: string
+                              enum:
+                              - healthy
+                              - unhealthy
+                              example: healthy
+                            rpcLatencyMs:
+                              type: number
+                              example: 45
+                            lag:
+                              type: number
+                              example: 3
+                            db:
+                              type: object
+                              properties:
+                                status:
+                                  type: string
+                                  enum:
+                                  - healthy
+                                  - unhealthy
+                                  example: healthy
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-KEY
+      description: API key obtained via the registration form. Include in the X-API-KEY header for all
+        authenticated requests.
