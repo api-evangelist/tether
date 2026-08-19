@@ -15,7 +15,7 @@ url: https://raw.githubusercontent.com/api-evangelist/tether/refs/heads/main/api
 image: https://tether.io/wp-content/themes/tether-io-theme/assets/images/logo.svg
 x-type: company
 x-source: harvest:secondary-market
-specificationVersion: '0.20'
+specificationVersion: '0.23'
 created: '2026-08-05'
 modified: '2026-08-05'
 tags:
