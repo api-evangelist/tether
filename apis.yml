@@ -30,6 +30,19 @@ tags:
 - Multi-Chain
 - Agents
 - MCP
+- Open-Source
+tags_raw:
+- Company
+- Stablecoins
+- Cryptocurrency
+- Blockchain
+- Wallets
+- Digital Assets
+- Payments
+- Self-Custody
+- Multi-Chain
+- Agents
+- MCP
 - Open Source
 apis:
 - aid: tether:tether-api-keys-api
@@ -38,6 +51,8 @@ apis:
   humanURL: https://docs.wdk.tether.io/tools/indexer-api
   baseURL: https://wdk-api.tether.io
   tags:
+  - APIKeys
+  tags_raw:
   - API Keys
   properties:
   - type: OpenAPI
