@@ -12,6 +12,18 @@ description: 'Tether Operations Limited is the issuer of USD₮ (USDT), the larg
   Tether also operates the QVAC local-AI SDK, the Tether Wallet app, and a public bug-bounty
   program.'
 url: https://raw.githubusercontent.com/api-evangelist/tether/refs/heads/main/apis.yml
+deliveryModel:
+  model: saas
+  open_source: false
+  commercial: true
+  callable_host: true
+  label: Hosted service · you call their endpoint
+  confidence: high
+  source:
+  - openapi
+  - pricing
+  generated: '2026-08-28'
+  method: derived
 image: https://tether.io/wp-content/themes/tether-io-theme/assets/images/logo.svg
 x-type: company
 x-source: harvest:secondary-market
