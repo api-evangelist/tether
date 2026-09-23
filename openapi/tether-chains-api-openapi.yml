@@ -1,8 +1,7 @@
 openapi: 3.2.0
 info:
   title: WDK Indexer Chains API
-  description: API for querying blockchain token transfers and balances across multiple networks. Authenticated
-    endpoints require an API key passed via the X-API-KEY header.
+  description: API for querying blockchain token transfers and balances across multiple networks. Authenticated endpoints require an API key passed via the X-API-KEY header.
   version: 1.0.0
 tags:
 - name: Chains
@@ -13,9 +12,7 @@ paths:
       summary: Get supported blockchains and tokens
       tags:
       - Chains
-      description: Returns the list of all supported blockchains and their available tokens. Endpoint
-        to discover valid blockchain and token combinations before calling other endpoints. This endpoint
-        reads directly from the server configuration and requires no authentication.
+      description: Returns the list of all supported blockchains and their available tokens. Endpoint to discover valid blockchain and token combinations before calling other endpoints. This endpoint reads directly from the server configuration and requires no authentication.
       responses:
         '200':
           description: List of supported blockchains with their tokens and case sensitivity rules
@@ -33,26 +30,21 @@ paths:
                       properties:
                         name:
                           type: string
-                          description: Blockchain identifier used as the {blockchain} path parameter in
-                            other endpoints.
+                          description: Blockchain identifier used as the {blockchain} path parameter in other endpoints.
                         tokens:
                           type: array
-                          description: Token identifiers available on this blockchain, used as the {token}
-                            path parameter.
+                          description: Token identifiers available on this blockchain, used as the {token} path parameter.
                           items:
                             type: string
                         caseSensitive:
                           type: object
-                          description: Case sensitivity rules. If present, addresses are preserved as-is
-                            (case-sensitive). If absent, addresses are automatically lowercased.
+                          description: Case sensitivity rules. If present, addresses are preserved as-is (case-sensitive). If absent, addresses are automatically lowercased.
                           properties:
                             address:
                               oneOf:
                               - type: boolean
                               - type: string
-                              description: Indicates address case sensitivity. When the caseSensitive
-                                object is present, addresses are not lowercased regardless of this field
-                                value.
+                              description: Indicates address case sensitivity. When the caseSensitive object is present, addresses are not lowercased regardless of this field value.
                             tx:
                               type: boolean
                               description: true = transaction hashes are case-sensitive.
@@ -83,11 +75,12 @@ paths:
                     type: number
                     description: HTTP status code
                 additionalProperties: false
+      operationId: getApiV1Chains
+      x-operation-id-source: derived
 components:
   securitySchemes:
     ApiKeyAuth:
       type: apiKey
       in: header
       name: X-API-KEY
-      description: API key obtained via the registration form. Include in the X-API-KEY header for all
-        authenticated requests.
+      description: API key obtained via the registration form. Include in the X-API-KEY header for all authenticated requests.

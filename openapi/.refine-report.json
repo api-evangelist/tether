@@ -1,11 +1,7 @@
 {
   "provider": "tether",
   "sources": [
-    "tether-api-keys-api-openapi.yml",
-    "tether-chains-api-openapi.yml",
-    "tether-health-api-openapi.yml",
-    "tether-token-balances-api-openapi.yml",
-    "tether-token-transfers-api-openapi.yml"
+    "_original/tether-wdk-indexer-openapi-original.yml"
   ],
   "outputs": [
     "tether-api-keys-api-openapi.yml",
@@ -18,12 +14,16 @@
   "errors": [],
   "warnings": [],
   "notes": [
-    "tether-api-keys-api-openapi.yml: upgraded openapi 3.0.0 -> OpenAPI 3.2.0",
-    "tether-chains-api-openapi.yml: upgraded openapi 3.0.0 -> OpenAPI 3.2.0",
-    "tether-health-api-openapi.yml: upgraded openapi 3.0.0 -> OpenAPI 3.2.0",
-    "tether-token-balances-api-openapi.yml: upgraded openapi 3.0.0 -> OpenAPI 3.2.0",
-    "tether-token-transfers-api-openapi.yml: upgraded openapi 3.0.0 -> OpenAPI 3.2.0",
+    "sourced from openapi/_original/ (1 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "tether-wdk-indexer-openapi-original.yml: upgraded openapi 3.0.0 -> OpenAPI 3.2.0",
+    "tether-wdk-indexer-openapi-original.yml: declared missing tag: API Keys",
     "apis.yml register: already-registered"
   ],
-  "skipped": []
+  "skipped": [
+    "tether-api-keys-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "tether-chains-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "tether-health-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "tether-token-balances-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "tether-token-transfers-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
 }

@@ -1,8 +1,7 @@
 openapi: 3.2.0
 info:
   title: WDK Indexer API Keys API
-  description: API for querying blockchain token transfers and balances across multiple networks. Authenticated
-    endpoints require an API key passed via the X-API-KEY header.
+  description: API for querying blockchain token transfers and balances across multiple networks. Authenticated endpoints require an API key passed via the X-API-KEY header.
   version: 1.0.0
 tags:
 - name: API Keys
@@ -119,12 +118,13 @@ paths:
                     type: number
                     description: HTTP status code
                 additionalProperties: false
+      operationId: getApiV1Keys
+      x-operation-id-source: derived
     post:
       summary: Create a new API key
       tags:
       - API Keys
-      description: Creates a new API key for the authenticated owner. Returns the plaintext key once;
-        store it securely.
+      description: Creates a new API key for the authenticated owner. Returns the plaintext key once; store it securely.
       requestBody:
         required: true
         content:
@@ -256,6 +256,8 @@ paths:
                     type: number
                     description: HTTP status code
                 additionalProperties: false
+      operationId: postApiV1Keys
+      x-operation-id-source: derived
   /api/v1/keys/{hashedKey}:
     delete:
       summary: Revoke an API key
@@ -373,11 +375,12 @@ paths:
                     type: number
                     description: HTTP status code
                 additionalProperties: false
+      operationId: deleteApiV1KeysByHashedKey
+      x-operation-id-source: derived
 components:
   securitySchemes:
     ApiKeyAuth:
       type: apiKey
       in: header
       name: X-API-KEY
-      description: API key obtained via the registration form. Include in the X-API-KEY header for all
-        authenticated requests.
+      description: API key obtained via the registration form. Include in the X-API-KEY header for all authenticated requests.

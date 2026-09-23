@@ -1,8 +1,7 @@
 openapi: 3.2.0
 info:
   title: WDK Indexer Token Balances API
-  description: API for querying blockchain token transfers and balances across multiple networks. Authenticated
-    endpoints require an API key passed via the X-API-KEY header.
+  description: API for querying blockchain token transfers and balances across multiple networks. Authenticated endpoints require an API key passed via the X-API-KEY header.
   version: 1.0.0
 tags:
 - name: Token Balances
@@ -13,9 +12,7 @@ paths:
       summary: Get token balance for an address
       tags:
       - Token Balances
-      description: Retrieve the current token balance for a specific wallet address on a given blockchain.
-        Returns a single balance amount representing how much of the specified token the address currently
-        holds.
+      description: Retrieve the current token balance for a specific wallet address on a given blockchain. Returns a single balance amount representing how much of the specified token the address currently holds.
       parameters:
       - schema:
           type: string
@@ -50,8 +47,7 @@ paths:
         in: path
         name: address
         required: true
-        description: Wallet address to query. Format varies by blockchain (e.g. 0x... for EVM, bc1...
-          for Bitcoin, T... for Tron).
+        description: Wallet address to query. Format varies by blockchain (e.g. 0x... for EVM, bc1... for Bitcoin, T... for Tron).
       security:
       - ApiKeyAuth: []
       responses:
@@ -168,15 +164,14 @@ paths:
                     type: number
                     description: HTTP status code
                 additionalProperties: false
+      operationId: getApiV1ByBlockchainByTokenByAddressTokenBalances
+      x-operation-id-source: derived
   /api/v1/batch/token-balances:
     post:
       summary: Get token balances for multiple addresses
       tags:
       - Token Balances
-      description: Retrieve the current token balance for multiple addresses in a single request. Each
-        item in the batch is processed independently - if one item fails (e.g. invalid address), the others
-        still return results. The response array maintains the same order as the request. Maximum 10 items
-        per batch.
+      description: Retrieve the current token balance for multiple addresses in a single request. Each item in the batch is processed independently - if one item fails (e.g. invalid address), the others still return results. The response array maintains the same order as the request. Maximum 10 items per batch.
       requestBody:
         required: true
         content:
@@ -224,13 +219,11 @@ paths:
       - ApiKeyAuth: []
       responses:
         '200':
-          description: Array of results in the same order as the request. Each element is either a balance
-            result or an error object.
+          description: Array of results in the same order as the request. Each element is either a balance result or an error object.
           content:
             application/json:
               schema:
-                description: Array of results in the same order as the request. Each element is either
-                  a balance result or an error object.
+                description: Array of results in the same order as the request. Each element is either a balance result or an error object.
                 type: array
                 items:
                   oneOf:
@@ -351,11 +344,12 @@ paths:
                     type: number
                     description: HTTP status code
                 additionalProperties: false
+      operationId: postApiV1BatchTokenBalances
+      x-operation-id-source: derived
 components:
   securitySchemes:
     ApiKeyAuth:
       type: apiKey
       in: header
       name: X-API-KEY
-      description: API key obtained via the registration form. Include in the X-API-KEY header for all
-        authenticated requests.
+      description: API key obtained via the registration form. Include in the X-API-KEY header for all authenticated requests.

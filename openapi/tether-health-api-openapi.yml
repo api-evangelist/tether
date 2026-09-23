@@ -1,8 +1,7 @@
 openapi: 3.2.0
 info:
   title: WDK Indexer Health API
-  description: API for querying blockchain token transfers and balances across multiple networks. Authenticated
-    endpoints require an API key passed via the X-API-KEY header.
+  description: API for querying blockchain token transfers and balances across multiple networks. Authenticated endpoints require an API key passed via the X-API-KEY header.
   version: 1.0.0
 tags:
 - name: Health
@@ -13,9 +12,7 @@ paths:
       summary: Deep health check endpoint
       tags:
       - Health
-      description: Checks Redis connectivity and blockchain indexer sync status. Returns HTTP 200 only
-        when the overall status is `healthy`. Returns HTTP 503 for any non-healthy overall status (`degraded`
-        or `unhealthy`), so readiness probes and load balancers can rely on the HTTP status code alone.
+      description: Checks Redis connectivity and blockchain indexer sync status. Returns HTTP 200 only when the overall status is `healthy`. Returns HTTP 503 for any non-healthy overall status (`degraded` or `unhealthy`), so readiness probes and load balancers can rely on the HTTP status code alone.
       responses:
         '200':
           description: Default Response
@@ -151,11 +148,12 @@ paths:
                                   - healthy
                                   - unhealthy
                                   example: healthy
+      operationId: getApiV1Health
+      x-operation-id-source: derived
 components:
   securitySchemes:
     ApiKeyAuth:
       type: apiKey
       in: header
       name: X-API-KEY
-      description: API key obtained via the registration form. Include in the X-API-KEY header for all
-        authenticated requests.
+      description: API key obtained via the registration form. Include in the X-API-KEY header for all authenticated requests.
