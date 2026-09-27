@@ -57,7 +57,8 @@ tags:
 - Multi-Chain
 - Agents
 - MCP
-- Open-Source
+- Open Source
+- Stablecoin Issuance
 tags_raw:
 - Company
 - Stablecoins
@@ -71,6 +72,8 @@ tags_raw:
 - Agents
 - MCP
 - Open Source
+- Open-Source
+- Stablecoin Issuance
 apis:
 - aid: tether:tether-api-keys-api
   name: Tether API Keys API
