@@ -1,0 +1,112 @@
+edges:
+- partner_name: npm registry
+  partner: npm
+  partner_match: register
+  type: register
+  direction: provider-built
+  category: official SDK (JavaScript/TypeScript)
+  evidence: https://www.npmjs.com/package/@tetherto/wdk
+  channel: package-registry
+  relationship: distribution-channel
+  contract_reference:
+    register: npm registry (public registry JSON)
+    spec_file: null
+    language: JavaScript/TypeScript
+    packages:
+    - name: '@tetherto/wdk'
+      version: 1.0.0-beta.20
+      released: '2026-10-15'
+      released_field: modified
+      lapsed: false
+      page: https://www.npmjs.com/package/@tetherto/wdk
+      repo_leg: domain:tether.io
+      publisher_leg: org:tetherto
+      matched_by: domain
+    - name: '@tetherto/wdk-cli'
+      version: 1.0.0-beta.7
+      released: '2026-10-15'
+      released_field: modified
+      lapsed: false
+      page: https://www.npmjs.com/package/@tetherto/wdk-cli
+      repo_leg: domain:tether.io
+      publisher_leg: org:tetherto
+      matched_by: domain
+    - name: '@tetherto/wdk-wallet-btc'
+      version: 1.0.0-beta.17
+      released: '2026-09-30'
+      released_field: modified
+      lapsed: false
+      page: https://www.npmjs.com/package/@tetherto/wdk-wallet-btc
+      repo_leg: domain:tether.io
+      publisher_leg: org:tetherto
+      matched_by: domain
+    - name: '@tetherto/wdk-wallet-evm'
+      version: 1.0.0-beta.22
+      released: '2026-10-15'
+      released_field: modified
+      lapsed: false
+      page: https://www.npmjs.com/package/@tetherto/wdk-wallet-evm
+      repo_leg: domain:tether.io
+      publisher_leg: org:tetherto
+      matched_by: domain
+    - name: '@tetherto/wdk-wallet-solana'
+      version: 1.0.0-beta.18
+      released: '2026-10-15'
+      released_field: modified
+      lapsed: false
+      page: https://www.npmjs.com/package/@tetherto/wdk-wallet-solana
+      repo_leg: domain:tether.io
+      publisher_leg: org:tetherto
+      matched_by: domain
+    - name: '@tetherto/wdk-wallet-spark'
+      version: 1.0.0-beta.28
+      released: '2026-09-30'
+      released_field: modified
+      lapsed: false
+      page: https://www.npmjs.com/package/@tetherto/wdk-wallet-spark
+      repo_leg: domain:tether.io
+      publisher_leg: org:tetherto
+      matched_by: domain
+    - name: '@tetherto/wdk-wallet-ton'
+      version: 1.0.0-beta.16
+      released: '2026-10-15'
+      released_field: modified
+      lapsed: false
+      page: https://www.npmjs.com/package/@tetherto/wdk-wallet-ton
+      repo_leg: domain:tether.io
+      publisher_leg: org:tetherto
+      matched_by: domain
+    - name: '@tetherto/wdk-wallet-tron'
+      version: 1.0.0-beta.15
+      released: '2026-10-05'
+      released_field: modified
+      lapsed: false
+      page: https://www.npmjs.com/package/@tetherto/wdk-wallet-tron
+      repo_leg: domain:tether.io
+      publisher_leg: org:tetherto
+      matched_by: domain
+    current: true
+    signal_note: 'an official package on the registry: distribution, not an integration; lapsed = no release in
+      24 months'
+    detected_by: sweep-official-sdks.py
+    detected: '2026-10-18'
+  detected_by: sweep-official-sdks.py
+  first_seen: '2026-10-18'
+generated: '2026-10-18'
+method: searched
+source:
+- https://api.nuget.org/v3
+- https://crates.io/api/v1
+- https://proxy.golang.org
+- https://pypi.org/pypi
+- https://registry.npmjs.org
+- https://repo1.maven.org/maven2
+- https://rubygems.org/api/v1
+checked:
+- https://api.nuget.org/v3
+- https://crates.io/api/v1
+- https://proxy.golang.org
+- https://pypi.org/pypi
+- https://registry.npmjs.org
+- https://repo1.maven.org/maven2
+- https://rubygems.org/api/v1
